@@ -1,9 +1,0 @@
-package _DAO;
-
-import model.User;
-
-public interface UserDAO {
-    User getUserByUsername(String username);
-    private boolean login(String username, String password);
-}
-
