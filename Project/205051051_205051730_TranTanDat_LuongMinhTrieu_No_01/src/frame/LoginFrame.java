@@ -3,24 +3,23 @@ package frame;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPasswordField;
+
+import dao.UserDAO;
+import dao.UserDAOImpl;
+
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-
-import _class.DatabaseConnector;
 
 public class LoginFrame extends JFrame {
 
@@ -31,28 +30,30 @@ public class LoginFrame extends JFrame {
     private JFrame frame;
     private JTextField usernameField;
     private JPasswordField passwordField;
+    private UserDAO userDAO;
 
     /**
      * Launch the application.
      */
-    
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                try {
-//                    LoginFrame frame = new LoginFrame();
-//                    frame.setVisible(false);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    LoginFrame frame = new LoginFrame();
+                    frame.setVisible(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     /**
      * Create the frame.
      */
     public LoginFrame() {
+    	// Khởi tạo đối tượng UserDAOImpl
+    	userDAO =  new UserDAOImpl();
         frame = new JFrame();
         frame.setBounds(100, 100, 399, 280);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,7 +95,7 @@ public class LoginFrame extends JFrame {
                 String username = usernameField.getText();
                 String password = String.valueOf(passwordField.getPassword());
 
-                if (login(username, password)) {
+                if (userDAO.login(username, password)) {
                     // Đăng nhập thành công
                     JOptionPane.showMessageDialog(frame, "Login Successful");
                     // Mở module Bán Hàng
@@ -132,7 +133,7 @@ public class LoginFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 String username = JOptionPane.showInputDialog(frame, "Enter your username:");
                 if (username != null) {
-                    String password = getPasswordByUsername(username);
+                    String password = userDAO.getPasswordByUsername(username);
                     if (password != null) {
                         JOptionPane.showMessageDialog(frame, "Your password is: " + password);
                     } else {
@@ -144,53 +145,10 @@ public class LoginFrame extends JFrame {
         	frame.setVisible(true);
    		}
 
-    private boolean login(String username, String password) {
-        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-        try (Connection connection = DatabaseConnector.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, username);
-            statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
-            return resultSet.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-    private String getPasswordByUsername(String username) {
-        String query = "SELECT password FROM users WHERE username = ?";
-        try (Connection connection = DatabaseConnector.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getString("password");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    private void createNewUser(String username, String password) {
-    	String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-        try (Connection connection = DatabaseConnector.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, username);
-            statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void openSalesModule() {
     	frame.dispose();
         SalesFrame salesFrame = new SalesFrame(); 
         salesFrame.setVisible(true); 
     }
-
-
 
 }

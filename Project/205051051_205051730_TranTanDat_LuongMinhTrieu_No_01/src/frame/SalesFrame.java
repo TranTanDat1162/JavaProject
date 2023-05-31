@@ -13,6 +13,8 @@ public class SalesFrame extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	@SuppressWarnings("unused")
+	private LoginFrame loginFrame;
 
 	/**
 	 * Launch the application.
@@ -30,6 +32,9 @@ public class SalesFrame extends JFrame {
 		});
 	}
 	
+	public void setLoginFrame(LoginFrame loginFrame) {
+        this.loginFrame = loginFrame;
+    }
 
 	/**
 	 * Create the frame.
