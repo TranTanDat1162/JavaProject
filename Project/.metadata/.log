@@ -6577,3 +6577,17 @@ java.lang.Error: SWT Resource was not properly disposed
 	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:659)
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:596)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1467)
+
+!ENTRY org.eclipse.core.filesystem 4 272 2023-06-01 11:02:09.960
+!MESSAGE Could not write file: E:\Java Technology\Project\.metadata\.plugins\org.eclipse.egit.core\.org.eclipse.egit.core.cmp.
+!STACK 0
+java.nio.file.FileSystemException: E:\Java Technology\Project\.metadata\.plugins\org.eclipse.egit.core\.org.eclipse.egit.core.cmp: Unable to determine if root directory exists
+	at java.base/java.nio.file.Files.createDirectories(Files.java:782)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.mkdir(LocalFile.java:309)
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.writeSilently(FileSystemResourceManager.java:1232)
+	at org.eclipse.core.internal.resources.SaveManager.saveMetaInfo(SaveManager.java:1321)
+	at org.eclipse.core.internal.resources.SaveManager.saveMetaInfo(SaveManager.java:1302)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1217)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1149)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:51)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)

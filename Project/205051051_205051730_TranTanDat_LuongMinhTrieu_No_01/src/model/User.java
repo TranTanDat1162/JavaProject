@@ -23,4 +23,11 @@ public class User {
 		this.password = password;
 	}
 	
+	public User(String password) {
+		super();
+		this.password = password;
+	}
+	
+	
+	
 }

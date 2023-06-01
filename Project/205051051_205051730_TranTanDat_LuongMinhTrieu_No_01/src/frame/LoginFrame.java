@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 
 import dao.UserDAO;
 import dao.UserDAOImpl;
+import model.User;
 
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
@@ -104,7 +105,7 @@ public class LoginFrame extends JFrame {
                 String username = usernameField.getText();
                 String password = String.valueOf(passwordField.getPassword());
 
-                if (userDAO.login(username, password)) {
+                if (userDAO.login(username, password) != null) {
                     // Đăng nhập thành công
                     JOptionPane.showMessageDialog(frame, "Login Successful");
                     // Mở module Bán Hàng
@@ -151,20 +152,22 @@ public class LoginFrame extends JFrame {
 
 		// Thêm chức năng Quên mật khẩu
 
-        lblForgotPassword.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                String username = JOptionPane.showInputDialog(frame, "Enter your username:");
-                if (username != null) {
-                    String password = userDAO.getPasswordByUsername(username);
-                    if (password != null) {
-                        JOptionPane.showMessageDialog(frame, "Your password is: " + password);
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Invalid username.");
-                    }
-                }
-            }
-        });
+		lblForgotPassword.addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		        String username = JOptionPane.showInputDialog(frame, "Enter your username:");
+		        if (username != null) {
+		            User user = userDAO.getPasswordByUsername(username);
+		            if (user != null) {
+		                String password = user.getPassword();
+		                JOptionPane.showMessageDialog(frame, "Your password is: " + password);
+		            } else {
+		                JOptionPane.showMessageDialog(frame, "Invalid username.");
+		            }
+		        }
+		    }
+		});
+
         	frame.setVisible(true);
    		}
 

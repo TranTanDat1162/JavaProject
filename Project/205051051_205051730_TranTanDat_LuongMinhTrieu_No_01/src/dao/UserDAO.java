@@ -1,7 +1,9 @@
 package dao;
 
+import model.User;
+
 public interface UserDAO {
-    boolean login(String username, String password);
-    String getPasswordByUsername(String username);
+    User login(String username, String password);
+    User getPasswordByUsername(String username);
 }
 
