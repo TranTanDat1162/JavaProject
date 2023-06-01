@@ -16,6 +16,7 @@ import model.User;
 
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.imageio.ImageIO;
 import java.awt.Image;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 
 
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -137,6 +139,7 @@ public class LoginFrame extends JFrame {
         lblNewLabel.setBounds(376, 11, 397, 56);
         frame.getContentPane().add(lblNewLabel);
 
+        // Thêm Logo UEF bên trái form
 		JLabel imageLabel = new JLabel();
 		try {
 		    InputStream inputStream = getClass().getResourceAsStream("/image/logouef.png");
@@ -155,18 +158,67 @@ public class LoginFrame extends JFrame {
 		lblForgotPassword.addMouseListener(new MouseAdapter() {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
-		        String username = JOptionPane.showInputDialog(frame, "Enter your username:");
-		        if (username != null) {
-		            User user = userDAO.getPasswordByUsername(username);
-		            if (user != null) {
-		                String password = user.getPassword();
-		                JOptionPane.showMessageDialog(frame, "Your password is: " + password);
+		        String username;
+		        User user;
+
+		        do {
+		            username = JOptionPane.showInputDialog(frame, "Enter your username:");
+		            if (username != null) {
+		                user = userDAO.getPasswordByUsername(username);
+		                if (user == null) {
+		                    JOptionPane.showMessageDialog(frame, "Invalid username.");
+		                }
 		            } else {
-		                JOptionPane.showMessageDialog(frame, "Invalid username.");
+		                return;  // Người dùng nhấn Cancel
+		            }
+		        } while (user == null);
+
+		        JPanel panel = new JPanel();
+		        panel.setLayout(new GridLayout(3, 2));
+
+		        JPasswordField newPasswordField = new JPasswordField();
+		        JPasswordField confirmPasswordField = new JPasswordField();
+
+		        panel.add(new JLabel("New Password:"));
+		        panel.add(newPasswordField);
+		        panel.add(new JLabel("Confirm Password:"));
+		        panel.add(confirmPasswordField);
+
+		        int option;
+		        String newPassword;
+		        String confirmPassword;
+		        do {
+		            option = JOptionPane.showOptionDialog(frame, panel, "Change Password",
+		                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+
+		            if (option == JOptionPane.OK_OPTION) {
+		                newPassword = String.valueOf(newPasswordField.getPassword());
+		                confirmPassword = String.valueOf(confirmPasswordField.getPassword());
+
+		                if (!newPassword.equals(confirmPassword)) {
+		                    JOptionPane.showMessageDialog(frame, "Passwords do not match.");
+		                }
+		            } else {
+		                return;  // Người dùng nhấn Cancel
+		            }
+		        } while (!newPassword.equals(confirmPassword));
+
+		        if (option == JOptionPane.OK_OPTION) {
+		            // Cập nhật mật khẩu mới vào đối tượng User
+		            user.setPassword(newPassword);
+		            // Thực hiện lưu mật khẩu mới vào cơ sở dữ liệu
+		            boolean updated = userDAO.updateUser(user);
+		            if (updated) {
+		                JOptionPane.showMessageDialog(frame, "Password changed successfully.");
+		            } else {
+		                JOptionPane.showMessageDialog(frame, "Failed to change password.");
 		            }
 		        }
 		    }
 		});
+
+
+
 
         	frame.setVisible(true);
    		}
