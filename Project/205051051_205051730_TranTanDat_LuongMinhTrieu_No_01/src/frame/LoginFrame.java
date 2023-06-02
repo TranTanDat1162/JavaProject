@@ -9,9 +9,6 @@ import javax.swing.JPasswordField;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-
-import dao.UserDAO;
-import dao.UserDAOImpl;
 import model.User;
 
 import javax.swing.JTextField;
@@ -31,6 +28,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+
+import logindao.UserDAO;
+import logindao.UserDAOImpl;
 
 public class LoginFrame extends JFrame {
 
