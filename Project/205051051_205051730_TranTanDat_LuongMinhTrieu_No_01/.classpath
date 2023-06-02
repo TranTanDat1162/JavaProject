@@ -6,6 +6,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry excluding="image/" kind="src" path="src"/>
+<<<<<<< Updated upstream
 	<classpathentry kind="lib" path="C:/Users/admin/Desktop/Private/mysql-connector-j-8.0.33/mysql-connector-j-8.0.33.jar"/>
+=======
+	<classpathentry kind="lib" path="D:/mysql-connector-j-8.0.33/mysql-connector-j-8.0.33.jar"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
+>>>>>>> Stashed changes
 	<classpathentry kind="output" path="bin"/>
 </classpath>
