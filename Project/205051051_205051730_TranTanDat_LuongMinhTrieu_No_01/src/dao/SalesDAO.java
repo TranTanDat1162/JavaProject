@@ -1,4 +1,4 @@
-package salesdao;
+package dao;
 
 import model.Cart;
 import model.Customer;

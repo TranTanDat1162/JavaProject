@@ -1,4 +1,4 @@
-package logindao;
+package dao;
 
 import model.User;
 

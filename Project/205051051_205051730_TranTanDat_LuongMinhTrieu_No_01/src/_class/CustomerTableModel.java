@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
+import dao.SalesDAOImpl;
 import model.Customer;
-import salesdao.SalesDAOImpl;
 
 public class CustomerTableModel extends AbstractTableModel{
 	// TableModel's column Names

@@ -29,8 +29,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
-import logindao.UserDAO;
-import logindao.UserDAOImpl;
+import dao.UserDAO;
+import dao.UserDAOImpl;
 
 public class LoginFrame extends JFrame {
 

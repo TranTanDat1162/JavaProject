@@ -7,14 +7,14 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import _class.CustomerTableModel;
+import dao.SalesDAOImpl;
+import dao.SalesDAOImpl.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import model.Customer;
-import salesdao.SalesDAOImpl;
-import salesdao.SalesDAOImpl.*;
 
 import java.awt.GridLayout;
 import javax.swing.JToggleButton;
