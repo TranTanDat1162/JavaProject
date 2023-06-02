@@ -111,7 +111,12 @@ public class LoginFrame extends JFrame {
                     // Đăng nhập thành công
                     JOptionPane.showMessageDialog(frame, "Login Successful");
                     // Mở module Bán Hàng
-                    openSalesModule();
+					try {
+						openSalesModule();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
                 } else {
                     // Đăng nhập không thành công
                     JOptionPane.showMessageDialog(frame, "Invalid username or password");

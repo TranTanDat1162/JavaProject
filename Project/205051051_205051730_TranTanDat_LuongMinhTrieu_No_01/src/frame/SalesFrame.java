@@ -6,13 +6,20 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import _class.CustomerTableModel;
 import dao.SalesDAOImpl;
 import dao.SalesDAOImpl.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import org.jdatepicker.*;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
+import _class.DateLabelFormatter;
+
+import org.jdatepicker.i18n.*;
 
 import model.Customer;
 
@@ -20,13 +27,16 @@ import java.awt.GridLayout;
 import javax.swing.JToggleButton;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Window.Type;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
@@ -59,7 +69,6 @@ public class SalesFrame extends JFrame {
 //	private JTable table;
 	private DefaultTableModel tableModel = new DefaultTableModel();
 	public static List<Customer> customer = new ArrayList<Customer>();
-//	public static List<String> customermodel = new ArrayList<String>();
 	public static JTable table;
 	Object[][] data;
 	
@@ -90,6 +99,7 @@ public class SalesFrame extends JFrame {
 	}
 	/**	
 	 * Create the frame.
+	 * @throws IOException 
 	 */
 	public SalesFrame() {
 		
@@ -158,11 +168,11 @@ public class SalesFrame extends JFrame {
 		GridBagLayout gbl_panel_1 = new GridBagLayout();
 		gbl_panel_1.columnWidths = new int[]{135, 183, 370, 0};
 		gbl_panel_1.rowHeights = new int[]{29, 29, 29, 29, 29, 0};
-		gbl_panel_1.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel_1.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_1.columnWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_panel_1.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel_1.setLayout(gbl_panel_1);
 		
-		JLabel lblItemName = new JLabel("New label");
+		JLabel lblItemName = new JLabel("Item name:");
 		lblItemName.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName = new GridBagConstraints();
 		gbc_lblItemName.fill = GridBagConstraints.BOTH;
@@ -180,7 +190,7 @@ public class SalesFrame extends JFrame {
 		gbc_textArea.gridy = 0;
 		panel_1.add(textArea, gbc_textArea);
 		
-		JLabel lblItemName_1 = new JLabel("New label");
+		JLabel lblItemName_1 = new JLabel("Sales date:");
 		lblItemName_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_1 = new GridBagConstraints();
 		gbc_lblItemName_1.fill = GridBagConstraints.BOTH;
@@ -189,16 +199,24 @@ public class SalesFrame extends JFrame {
 		gbc_lblItemName_1.gridy = 1;
 		panel_1.add(lblItemName_1, gbc_lblItemName_1);
 		
-		JTextArea textArea_1 = new JTextArea();
-		textArea_1.setFont(new Font("Arial", Font.PLAIN, 16));
-		GridBagConstraints gbc_textArea_1 = new GridBagConstraints();
-		gbc_textArea_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textArea_1.insets = new Insets(0, 0, 5, 0);
-		gbc_textArea_1.gridx = 2;
-		gbc_textArea_1.gridy = 1;
-		panel_1.add(textArea_1, gbc_textArea_1);
 		
-		JLabel lblItemName_2 = new JLabel("New label");
+		Properties p = new Properties();
+		p.put("text.today", "Today");
+		p.put("text.month", "Month");
+		p.put("text.year", "Year");
+		
+		UtilDateModel model = new UtilDateModel();
+		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel,new DateLabelFormatter());
+
+		GridBagConstraints gbc_DatePanel = new GridBagConstraints();
+		gbc_DatePanel.insets = new Insets(0, 0, 5, 0);
+		gbc_DatePanel.fill = GridBagConstraints.BOTH;
+		gbc_DatePanel.gridx = 2;
+		gbc_DatePanel.gridy = 1;
+		panel_1.add(datePicker, gbc_DatePanel);
+	
+		JLabel lblItemName_2 = new JLabel("Sales person");
 		lblItemName_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_2 = new GridBagConstraints();
 		gbc_lblItemName_2.fill = GridBagConstraints.BOTH;
@@ -216,7 +234,7 @@ public class SalesFrame extends JFrame {
 		gbc_textArea_2.gridy = 2;
 		panel_1.add(textArea_2, gbc_textArea_2);
 		
-		JLabel lblItemName_3 = new JLabel("New label");
+		JLabel lblItemName_3 = new JLabel("Fee (đ)");
 		lblItemName_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_3 = new GridBagConstraints();
 		gbc_lblItemName_3.fill = GridBagConstraints.BOTH;
@@ -234,7 +252,7 @@ public class SalesFrame extends JFrame {
 		gbc_textArea_3.gridy = 3;
 		panel_1.add(textArea_3, gbc_textArea_3);
 		
-		JLabel lblItemName_4 = new JLabel("New label");
+		JLabel lblItemName_4 = new JLabel("Quantity");
 		lblItemName_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_4 = new GridBagConstraints();
 		gbc_lblItemName_4.fill = GridBagConstraints.BOTH;
