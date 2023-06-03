@@ -298,6 +298,7 @@ public class SalesFrame extends JFrame {
 		JLabel lblItemName_1 = new JLabel("Sales date:");
 		lblItemName_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_1 = new GridBagConstraints();
+		
 		gbc_lblItemName_1.fill = GridBagConstraints.BOTH;
 		gbc_lblItemName_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblItemName_1.gridx = 0;
