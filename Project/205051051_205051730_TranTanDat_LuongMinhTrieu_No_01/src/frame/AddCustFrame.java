@@ -3,6 +3,9 @@ package frame;
 import java.awt.EventQueue;
 
 import frame.SalesFrame;
+import model.Cart;
+import model.Customer;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -20,6 +23,9 @@ import java.awt.Window.Type;
 import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.table.DefaultTableModel;
 
@@ -100,9 +106,13 @@ public class AddCustFrame extends JFrame {
 		JButton btnNewButton = new JButton("Create");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Object[] row = {textField.getText(),textField_1.getText()};
+				String a = textField.getText();
+				String b = textField_1.getText();
+				Object[] row = {a,b};
 			    DefaultTableModel model = (DefaultTableModel) SalesFrame.table.getModel();
 			    model.addRow(row);
+			    Date d = new java.sql.Date(System.currentTimeMillis());
+			    SalesFrame.customer.add(new Customer(a,Integer.parseInt(b),new Cart(null, null, d.toString(), null, 0, 0)));
 			    dispose();
 			}
 		});

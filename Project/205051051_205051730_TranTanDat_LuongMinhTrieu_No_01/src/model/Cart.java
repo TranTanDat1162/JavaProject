@@ -1,16 +1,17 @@
 package model;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.Calendar;
 
 public class Cart {
-	private String customerID;
-	private String itemname;
-	private Date salesdate;
-	private String Seller;
-	private int fee;
-	private int quantity;
+	private String customerID = "";
+	private String itemname = "";
+	private String salesdate;
+	private String Seller = "";
+	private int fee = 0;
+	private int quantity = 0;
 	
-	public void Cart(String customerID, String itemname, Date salesdate, String Seller, int fee, int quantity) {
+	public Cart(String customerID, String itemname, String salesdate, String Seller, int fee, int quantity) {
 		this.customerID = customerID;
 		this.itemname = itemname;
 		this.salesdate = salesdate;
@@ -18,7 +19,7 @@ public class Cart {
 		this.fee = fee;
 		this.quantity = quantity;
 	}
-
+	
 	/**
 	 * @return the customerID
 	 */
@@ -50,14 +51,14 @@ public class Cart {
 	/**
 	 * @return the salesdate
 	 */
-	public Date getSalesdate() {
+	public String getSalesdate() {
 		return salesdate;
 	}
 
 	/**
 	 * @param salesdate the salesdate to set
 	 */
-	public void setSalesdate(Date salesdate) {
+	public void setSalesdate(String salesdate) {
 		this.salesdate = salesdate;
 	}
 

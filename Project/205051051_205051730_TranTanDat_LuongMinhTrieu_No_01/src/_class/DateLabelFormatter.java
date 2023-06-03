@@ -1,5 +1,6 @@
 package _class;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,8 +13,8 @@ public class DateLabelFormatter extends AbstractFormatter {
     private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 
     @Override
-    public Object stringToValue(String text) throws ParseException {
-        return dateFormatter.parseObject(text);
+    public Date stringToValue(String text) throws ParseException {
+        return (Date) dateFormatter.parseObject(text);
     }
 
     @Override
@@ -25,4 +26,4 @@ public class DateLabelFormatter extends AbstractFormatter {
 
         return "";
     }
-}
+}	

@@ -1,17 +1,43 @@
 package model;
 
-import java.util.List;
-
 public class Customer {
+	
 	private int customerId;
 	private String name;
 	private int tel;
-	Object cart = new Cart();
+	Cart cart = null;
 	
-	public Customer(int customerID, String name, int tel) {
-		this.customerId = customerID;
+	public Customer(int customerId, String name, int tel) {
+		this.customerId = customerId;
 		this.name = name;
 		this.tel = tel;
+	}
+	public Customer(String name, int tel) {
+		this.name = name;
+		this.tel = tel;
+	}
+	public Customer(int customerId,String name, int tel, Cart cart) {
+		this.customerId = customerId;
+		this.name = name;
+		this.tel = tel;
+		this.cart =cart;
+	}
+	public Customer(String name, int tel, Cart cart) {
+		this.name = name;
+		this.tel = tel;
+		this.cart =cart;
+	}
+	/**
+	 * @return the cart
+	 */
+	public Cart getCart() {
+		return cart;
+	}
+	/**
+	 * @param cart the cart to set
+	 */
+	public void setCart(Cart cart) {
+		this.cart = cart;
 	}
 	/**
 	 * @return the customerId
