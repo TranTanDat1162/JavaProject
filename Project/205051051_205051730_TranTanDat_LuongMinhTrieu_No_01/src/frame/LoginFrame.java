@@ -19,7 +19,6 @@ import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -31,7 +30,6 @@ import javax.swing.SwingConstants;
 
 import dao.UserDAO;
 import dao.UserDAOImpl;
-
 
 public class LoginFrame extends JFrame {
 
@@ -117,7 +115,7 @@ public class LoginFrame extends JFrame {
 					try {
 						openSalesModule();
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
+						// TODO Auto-generated catch block1
 						e1.printStackTrace();
 					}
                 } else {
@@ -150,7 +148,7 @@ public class LoginFrame extends JFrame {
         // Thêm Logo UEF bên trái form
 		JLabel imageLabel = new JLabel();
 		try {
-		    InputStream inputStream = getClass().getResourceAsStream("/image/logouef.png");
+		    InputStream inputStream = getClass().getResourceAsStream("/images/logouef.png");
 		    Image image = ImageIO.read(inputStream);
 		    Image scaledImage = image.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
 		    imageLabel.setIcon(new ImageIcon(scaledImage));
@@ -225,10 +223,7 @@ public class LoginFrame extends JFrame {
 		    }
 		});
 
-
-
-
-        	frame.setVisible(true);
+        frame.setVisible(true);
    		}
 
     private void openSalesModule() {
