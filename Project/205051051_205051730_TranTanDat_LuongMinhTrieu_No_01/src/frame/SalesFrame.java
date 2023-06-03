@@ -61,7 +61,8 @@ import java.lang.reflect.Array;
 public class SalesFrame extends JFrame {
 
 	/**
-	 * 
+	 *
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("unused")
