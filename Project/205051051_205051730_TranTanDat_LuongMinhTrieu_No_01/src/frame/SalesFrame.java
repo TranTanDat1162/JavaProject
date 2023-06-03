@@ -98,6 +98,7 @@ public class SalesFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("unused")
 	private LoginFrame loginFrame;
+	private JFrame frame;
 	SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 	private DefaultTableModel tableModel = new DefaultTableModel();
 	public static List<Customer> customer = new ArrayList<Customer>();
@@ -163,6 +164,7 @@ public class SalesFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("SaleList");
 
+		frame = new JFrame();
 		salesDAO = new SalesDAOImpl();
 		setType(Type.UTILITY);
 
@@ -432,13 +434,24 @@ public class SalesFrame extends JFrame {
 		gbc_btnSave.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSave.gridx = 0;
 		gbc_btnSave.gridy = 0;
-		panel_2.add(btnSave, gbc_btnSave);
+		panel_2.add(btnSave, gbc_btnSave);	
 		
-		JButton btnNewButton_3 = new JButton("Cancel");
+		JButton btnNewButton_3 = new JButton("Log Out");
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				openLoginModule();
+			}
+		});
 		btnNewButton_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
 		gbc_btnNewButton_3.gridx = 1;
 		gbc_btnNewButton_3.gridy = 0;
 		panel_2.add(btnNewButton_3, gbc_btnNewButton_3);
 	}
+	
+	private void openLoginModule() {
+        this.setVisible(false);
+        LoginFrame loginFrame = new LoginFrame(); 
+        loginFrame.setVisible(false);
+    }
 }
