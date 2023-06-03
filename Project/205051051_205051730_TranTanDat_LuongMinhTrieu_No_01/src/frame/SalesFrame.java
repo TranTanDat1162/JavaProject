@@ -1,63 +1,39 @@
 package frame;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-
-import dao.SalesDAOImpl;
-import dao.SalesDAOImpl.*;
-
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
-import org.jdatepicker.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.table.DefaultTableModel;
+
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import _class.DateLabelFormatter;
-
-import org.jdatepicker.i18n.*;
-
+import dao.*;
 import model.Customer;
-
-import java.awt.GridLayout;
-import javax.swing.JToggleButton;
-import javax.swing.JScrollPane;
-import javax.swing.JButton;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Window.Type;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.awt.event.ActionEvent;
-import java.awt.FlowLayout;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.BoxLayout;
-import java.awt.Component;
-import javax.swing.JTable;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSplitPane;
-import javax.swing.SpringLayout;
-import javax.swing.JTextField;
-import java.awt.Font;
-import javax.swing.JTextArea;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.EtchedBorder;
-import java.lang.reflect.Array;
 public class SalesFrame extends JFrame {
 
 	/**
@@ -71,6 +47,7 @@ public class SalesFrame extends JFrame {
 	private DefaultTableModel tableModel = new DefaultTableModel();
 	public static List<Customer> customer = new ArrayList<Customer>();
 	public static JTable table;
+	SalesDAO salesDAO;
 	Object[][] data;
 	
 	/**
@@ -103,8 +80,8 @@ public class SalesFrame extends JFrame {
 	 * @throws IOException 
 	 */
 	public SalesFrame() {
-		
-		setTitle("SaleList");
+		salesDAO = new SalesDAOImpl();
+		setType(Type.UTILITY);
 		setBounds(100, 100, 800, 550);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{791, 0};
@@ -126,7 +103,33 @@ public class SalesFrame extends JFrame {
 		JButton btnSearch = new JButton("Search customer");
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnSearch);
-		
+
+		btnSearch.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String searchName = JOptionPane.showInputDialog("Enter customer name:");
+
+		        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+		        int rowCount = tableModel.getRowCount();
+		        boolean found = false;
+
+		        for (int i = 0; i < rowCount; i++) {
+		            String customerName = (String) tableModel.getValueAt(i, 0);
+
+		            if (customerName.equalsIgnoreCase(searchName)) {
+		                table.getSelectionModel().setSelectionInterval(i, i);
+		                table.scrollRectToVisible(table.getCellRect(i, 0, true));
+		                found = true;
+		                break;
+		            }
+		        }
+
+		        if (!found) {
+		            JOptionPane.showMessageDialog(SalesFrame.this, "Customer not found.");
+		        }
+		    }
+		});
+
+
 		JButton btnNewCust = new JButton("Add new customer");
 		btnNewCust.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

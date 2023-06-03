@@ -10,13 +10,17 @@ public class Cart {
 	private int fee;
 	private int quantity;
 	
-	public void Cart(String customerID, String itemname, Date salesdate, String Seller, int fee, int quantity) {
+	public Cart(String customerID, String itemname, Date salesdate, String Seller, int fee, int quantity) {
 		this.customerID = customerID;
 		this.itemname = itemname;
 		this.salesdate = salesdate;
 		this.Seller = Seller;
 		this.fee = fee;
 		this.quantity = quantity;
+	}
+
+	public Cart() {
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

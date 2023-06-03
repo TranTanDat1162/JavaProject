@@ -1,11 +1,5 @@
 package dao;
 
-import model.Cart;
-import model.Customer;
-import _class.*;
-import frame.SalesFrame;
-import frame.SalesFrame.*;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,11 +9,12 @@ import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
-import com.mysql.cj.xdevapi.Table;
-
-
+import _class.DatabaseActionException;
+import _class.DatabaseConnector;
+import frame.SalesFrame;
+import model.Cart;
+import model.Customer;
 
 public class SalesDAOImpl implements SalesDAO {
 
@@ -28,10 +23,28 @@ public class SalesDAOImpl implements SalesDAO {
 	
 	
 	@Override
-	public void Search(String name) {
-		// TODO Auto-generated method stub
-		
+	public List<Customer> Search(String name, DefaultTableModel tableCustomers) {
+	    List<Customer> searchResults = new ArrayList<>();
+
+	    for (Customer customer : customer) {
+	        if (customer.getName().equalsIgnoreCase(name)) {
+	            searchResults.add(customer);
+	        }
+	    }
+
+	    updateCustomerTable(searchResults, tableCustomers);
+	    return searchResults;
 	}
+
+	private void updateCustomerTable(List<Customer> searchResults, DefaultTableModel tableCustomers) {
+	    tableCustomers.setRowCount(0); // Xóa tất cả các dòng hiện tại trong bảng
+
+	    for (Customer customer : searchResults) {
+	        Object[] rowData = { customer.getName(), customer.getTel() };
+	        tableCustomers.addRow(rowData);
+	    }
+	}
+
 
 	@Override
 	public void Add(String name, int tel) {
