@@ -1,11 +1,5 @@
 package dao;
 
-import model.Cart;
-import model.Customer;
-import _class.*;
-import frame.SalesFrame;
-import frame.SalesFrame.*;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,12 +7,24 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.swing.JButton;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import javax.swing.table.TableRowSorter;
+import javax.swing.SortOrder;
 
+
+import _class.DatabaseActionException;
+import _class.DatabaseConnector;
+import frame.SalesFrame;
+import model.Cart;
+import model.Customer;
 
 public class SalesDAOImpl implements SalesDAO {
 
@@ -26,13 +32,46 @@ public class SalesDAOImpl implements SalesDAO {
 	private Cart cart = null;
 	static String col[] = {"Name","Telephone"};
 	
-	
 	@Override
-	public void Search(String name) {
-		// TODO Auto-generated method stub
-		
+	public List<Customer> Search(String name, DefaultTableModel tableCustomers) {
+	    List<Customer> searchResults = new ArrayList<>();
+	    for (Customer customer : customerlist) {
+	        if (customer.getName().equalsIgnoreCase(name)) {
+	            searchResults.add(customer);
+	        }
+	    }
+
+	    updateCustomerTable(searchResults, tableCustomers);
+	    return searchResults;
 	}
 
+	private void updateCustomerTable(List<Customer> searchResults, DefaultTableModel tableCustomers) {
+	    tableCustomers.setRowCount(0); // Xóa tất cả các dòng hiện tại trong bảng
+
+	    for (Customer customer : searchResults) {
+	        Object[] rowData = { customer.getName(), customer.getTel() };
+	        tableCustomers.addRow(rowData);
+	    }
+	}
+	
+	@Override
+	public void sortCustomerList(DefaultTableModel tableModel, AtomicBoolean isSorted) {
+	    TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableModel);
+	    JTable table = SalesFrame.getTable();
+	    table.setRowSorter(sorter);
+
+	    List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+	    sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING)); // Sắp xếp theo cột tên (cột 0) theo thứ tự tăng dần
+
+	    if (isSorted.get()) {
+	        sortKeys.set(0, new RowSorter.SortKey(0, SortOrder.DESCENDING)); // Nếu đã sắp xếp rồi, đảo ngược thứ tự sắp xếp
+	    }
+
+	    sorter.setSortKeys(sortKeys);
+	    sorter.sort();
+	}
+
+	
 	@Override
 	public void Add(String name, int tel) {
 		// TODO Auto-generated method stub
@@ -117,4 +156,8 @@ public class SalesDAOImpl implements SalesDAO {
 //		}
 //		return dataset;
 //	}	
+	
+	public static void AddCustomer() {
+		
+	}	
 }

@@ -32,6 +32,7 @@ import javax.swing.SwingConstants;
 import dao.UserDAO;
 import dao.UserDAOImpl;
 
+
 public class LoginFrame extends JFrame {
 
     /**
@@ -66,6 +67,8 @@ public class LoginFrame extends JFrame {
     	// Khởi tạo đối tượng UserDAOImpl
     	userDAO =  new UserDAOImpl();
         frame = new JFrame();
+        frame.setResizable(false);
+        frame.setType(Type.UTILITY);
         frame.setBounds(100, 100, 795, 396);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);

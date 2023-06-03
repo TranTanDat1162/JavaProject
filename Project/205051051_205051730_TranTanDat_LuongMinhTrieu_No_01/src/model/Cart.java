@@ -19,7 +19,12 @@ public class Cart {
 		this.fee = fee;
 		this.quantity = quantity;
 	}
-	
+
+
+	public Cart() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * @return the customerID
 	 */

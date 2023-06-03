@@ -1,17 +1,30 @@
 package frame;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-
-import dao.SalesDAOImpl;
-import dao.SalesDAOImpl.*;
-
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+
 import org.jdatepicker.*;
 import org.jdatepicker.impl.*;
 
@@ -63,6 +76,19 @@ import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+
+import javax.swing.border.EtchedBorder;
+import javax.swing.table.DefaultTableModel;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
+import _class.DateLabelFormatter;
+import dao.SalesDAO;
+import dao.SalesDAOImpl;
+import model.Customer;
+
 public class SalesFrame extends JFrame {
 
 	/**
@@ -77,11 +103,16 @@ public class SalesFrame extends JFrame {
 	public static List<Customer> customer = new ArrayList<Customer>();
 	Calendar calendar = Calendar.getInstance();
 	public static JTable table;
+
 	public JTextField txtfItemName;
 	public JTextField txtfFee;
 	public JTextField txtfQuant;
 	public JTextField txtfSalesPerson;
 	public UtilDateModel model;
+
+	SalesDAO salesDAO;
+	Object[][] data;
+
 	
 	/**
 	 * Launch the application.
@@ -103,6 +134,11 @@ public class SalesFrame extends JFrame {
 	public void setLoginFrame(LoginFrame loginFrame) {
         this.loginFrame = loginFrame;
     }
+	
+	public static JTable getTable() {
+	    return table;
+	}
+	
 	public void setTable() {
 		table = new JTable();
 		table.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -123,8 +159,13 @@ public class SalesFrame extends JFrame {
 	 */
 	public SalesFrame() {
 
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("SaleList");
+
+		salesDAO = new SalesDAOImpl();
+		setType(Type.UTILITY);
+
 		setBounds(100, 100, 800, 550);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{791, 0};
@@ -146,7 +187,33 @@ public class SalesFrame extends JFrame {
 		JButton btnSearch = new JButton("Search customer");
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnSearch);
-		
+
+		btnSearch.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String searchName = JOptionPane.showInputDialog("Enter customer name:");
+
+		        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+		        int rowCount = tableModel.getRowCount();
+		        boolean found = false;
+
+		        for (int i = 0; i < rowCount; i++) {
+		            String customerName = (String) tableModel.getValueAt(i, 0);
+
+		            if (customerName.equalsIgnoreCase(searchName)) {
+		                table.getSelectionModel().setSelectionInterval(i, i);
+		                table.scrollRectToVisible(table.getCellRect(i, 0, true));
+		                found = true;
+		                break;
+		            }
+		        }
+
+		        if (!found) {
+		            JOptionPane.showMessageDialog(SalesFrame.this, "Customer not found.");
+		        }
+		    }
+		});
+
+
 		JButton btnNewCust = new JButton("Add new customer");
 		btnNewCust.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -156,11 +223,27 @@ public class SalesFrame extends JFrame {
 		});
 		btnNewCust.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnNewCust);
-		
+
+		// Tạo nút "Sort customer"
+		AtomicBoolean isSorted = new AtomicBoolean(false); // Khởi tạo AtomicBoolean với giá trị ban đầu là false
 		JButton btnSort = new JButton("Sort customer");
 		btnSort.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnSort);
-		
+
+		// Thêm xử lý sự kiện cho nút "Sort customer"
+		btnSort.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        // Sắp xếp danh sách tên
+		        DefaultTableModel tableModel = (DefaultTableModel) SalesFrame.getTable().getModel();
+		        SalesDAOImpl salesDAO = new SalesDAOImpl();
+		        salesDAO.sortCustomerList(tableModel, isSorted);
+
+		        // Đảo ngược trạng thái cờ
+		        isSorted.set(!isSorted.get()); // Thay đổi giá trị của AtomicBoolean
+
+		    }
+		});	
+
 		JPanel panel_3 = new JPanel();
 		GridBagConstraints gbc_panel_3 = new GridBagConstraints();
 		gbc_panel_3.fill = GridBagConstraints.BOTH;
