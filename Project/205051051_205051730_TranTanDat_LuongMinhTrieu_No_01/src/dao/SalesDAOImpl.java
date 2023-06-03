@@ -6,9 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.swing.JButton;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import javax.swing.SortOrder;
+
 
 import _class.DatabaseActionException;
 import _class.DatabaseConnector;
@@ -20,7 +28,6 @@ public class SalesDAOImpl implements SalesDAO {
 
 	private static List<Customer> customer = new ArrayList<>();
 	static String col[] = {"Name","Telephone"};
-	
 	
 	@Override
 	public List<Customer> Search(String name, DefaultTableModel tableCustomers) {
@@ -44,8 +51,25 @@ public class SalesDAOImpl implements SalesDAO {
 	        tableCustomers.addRow(rowData);
 	    }
 	}
+	
+	@Override
+	public void sortCustomerList(DefaultTableModel tableModel, AtomicBoolean isSorted) {
+	    TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableModel);
+	    JTable table = SalesFrame.getTable();
+	    table.setRowSorter(sorter);
 
+	    List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+	    sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING)); // Sắp xếp theo cột tên (cột 0) theo thứ tự tăng dần
 
+	    if (isSorted.get()) {
+	        sortKeys.set(0, new RowSorter.SortKey(0, SortOrder.DESCENDING)); // Nếu đã sắp xếp rồi, đảo ngược thứ tự sắp xếp
+	    }
+
+	    sorter.setSortKeys(sortKeys);
+	    sorter.sort();
+	}
+
+	
 	@Override
 	public void Add(String name, int tel) {
 		// TODO Auto-generated method stub
@@ -57,7 +81,7 @@ public class SalesDAOImpl implements SalesDAO {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 	public static List<Customer>  updateCustomerDAO(){
 		try(Connection connection = DatabaseConnector.getConnection()) {
 			PreparedStatement dm = connection.prepareStatement("SELECT * FROM customer");
@@ -85,18 +109,5 @@ public class SalesDAOImpl implements SalesDAO {
 	
 	public static void AddCustomer() {
 		
-	}
-//	public static List<Customer>  updateCustomerList() {
-//		int i = 0;
-//		List<Customer> dataset = null;
-//		for (Customer customertemp : customer) {
-//			int id = customertemp.getCustomerId();
-//			String name = customertemp.getName();
-//			int tel = customertemp.getTel();
-//			Customer data = new Customer(id,name,tel);
-//			dataset = data;
-//			i++;
-//		}
-//		return dataset;
-//	}	
+	}	
 }

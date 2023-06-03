@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,7 +32,8 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import _class.DateLabelFormatter;
-import dao.*;
+import dao.SalesDAO;
+import dao.SalesDAOImpl;
 import model.Customer;
 public class SalesFrame extends JFrame {
 
@@ -70,6 +71,11 @@ public class SalesFrame extends JFrame {
 	public void setLoginFrame(LoginFrame loginFrame) {
         this.loginFrame = loginFrame;
     }
+	
+	public static JTable getTable() {
+	    return table;
+	}
+	
 	public void setTable() {
 		table = new JTable();
 		tableModel = SalesDAOImpl.ModelPrep();
@@ -139,11 +145,27 @@ public class SalesFrame extends JFrame {
 		});
 		btnNewCust.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnNewCust);
-		
+
+		// Tạo nút "Sort customer"
+		AtomicBoolean isSorted = new AtomicBoolean(false); // Khởi tạo AtomicBoolean với giá trị ban đầu là false
 		JButton btnSort = new JButton("Sort customer");
 		btnSort.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnSort);
-		
+
+		// Thêm xử lý sự kiện cho nút "Sort customer"
+		btnSort.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        // Sắp xếp danh sách tên
+		        DefaultTableModel tableModel = (DefaultTableModel) SalesFrame.getTable().getModel();
+		        SalesDAOImpl salesDAO = new SalesDAOImpl();
+		        salesDAO.sortCustomerList(tableModel, isSorted);
+
+		        // Đảo ngược trạng thái cờ
+		        isSorted.set(!isSorted.get()); // Thay đổi giá trị của AtomicBoolean
+
+		    }
+		});	
+
 		JPanel panel_3 = new JPanel();
 		GridBagConstraints gbc_panel_3 = new GridBagConstraints();
 		gbc_panel_3.fill = GridBagConstraints.BOTH;
