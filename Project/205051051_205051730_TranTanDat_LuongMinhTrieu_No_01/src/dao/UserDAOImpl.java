@@ -10,12 +10,11 @@ import model.User;
 
 public class UserDAOImpl implements UserDAO {
 	@Override
-	public User login(String username, String password) {
-	    String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+	public User login(String username) {
+	    String query = "SELECT * FROM users WHERE username = ?";
 	    try (Connection connection = DatabaseConnector.getConnection();
 	         PreparedStatement statement = connection.prepareStatement(query)) {
 	        statement.setString(1, username);
-	        statement.setString(2, password);
 	        try (ResultSet resultSet = statement.executeQuery()) {
 	            if (resultSet.next()) {
 	                String retrievedUsername = resultSet.getString("username");
@@ -30,6 +29,7 @@ public class UserDAOImpl implements UserDAO {
 	    }
 	    return null;
 	}
+
 
 
 	@Override

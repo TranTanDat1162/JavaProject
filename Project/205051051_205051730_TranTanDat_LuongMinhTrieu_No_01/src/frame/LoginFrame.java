@@ -108,22 +108,30 @@ public class LoginFrame extends JFrame {
                 String username = usernameField.getText();
                 String password = String.valueOf(passwordField.getPassword());
 
-                if (userDAO.login(username, password) != null) {
-                    // Đăng nhập thành công
-                    JOptionPane.showMessageDialog(frame, "Login Successful");
-                    // Mở module Bán Hàng
-					try {
-						openSalesModule();
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block1
-						e1.printStackTrace();
-					}
+                User user = userDAO.login(username);
+
+                if (user == null) {
+                    // Người dùng không tồn tại
+                    JOptionPane.showMessageDialog(frame, "User does not exist");
                 } else {
-                    // Đăng nhập không thành công
-                    JOptionPane.showMessageDialog(frame, "Invalid username or password");
+                    // Người dùng tồn tại
+                    if (user.getPassword().equals(password)) {
+                        // Đăng nhập thành công
+                        JOptionPane.showMessageDialog(frame, "Login Successful");
+                        // Mở module Bán Hàng
+                        try {
+                            openSalesModule();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                    } else {
+                        // Sai mật khẩu
+                        JOptionPane.showMessageDialog(frame, "Incorrect password");
+                    }
                 }
             }
         });
+
         btnLogin.setBounds(441, 243, 90, 37);
         frame.getContentPane().add(btnLogin);
 
