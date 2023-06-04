@@ -131,7 +131,6 @@ public class LoginFrame extends JFrame {
                 }
             }
         });
-
         btnLogin.setBounds(441, 243, 90, 37);
         frame.getContentPane().add(btnLogin);
 

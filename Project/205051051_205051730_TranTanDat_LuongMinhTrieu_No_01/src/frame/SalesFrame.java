@@ -192,29 +192,35 @@ public class SalesFrame extends JFrame {
 
 		btnSearch.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        String searchName = JOptionPane.showInputDialog("Enter customer name:");
-
-		        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-		        int rowCount = tableModel.getRowCount();
+		        String searchName = "";
 		        boolean found = false;
 
-		        for (int i = 0; i < rowCount; i++) {
-		            String customerName = (String) tableModel.getValueAt(i, 0);
+		        while (!found && searchName != null) {
+		            searchName = JOptionPane.showInputDialog("Enter customer name:");
 
-		            if (customerName.equalsIgnoreCase(searchName)) {
-		                table.getSelectionModel().setSelectionInterval(i, i);
-		                table.scrollRectToVisible(table.getCellRect(i, 0, true));
-		                found = true;
-		                break;
+		            if (searchName != null) {
+		                DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+		                int rowCount = tableModel.getRowCount();
+		                found = false;
+
+		                for (int i = 0; i < rowCount; i++) {
+		                    String customerName = (String) tableModel.getValueAt(i, 0);
+
+		                    if (customerName.equalsIgnoreCase(searchName)) {
+		                        table.getSelectionModel().setSelectionInterval(i, i);
+		                        table.scrollRectToVisible(table.getCellRect(i, 0, true));
+		                        found = true;
+		                        break;
+		                    }
+		                }
+
+		                if (!found) {
+		                    JOptionPane.showMessageDialog(SalesFrame.this, "Customer not found.");
+		                }
 		            }
-		        }
-
-		        if (!found) {
-		            JOptionPane.showMessageDialog(SalesFrame.this, "Customer not found.");
 		        }
 		    }
 		});
-
 
 		JButton btnNewCust = new JButton("Add new customer");
 		btnNewCust.addActionListener(new ActionListener() {
