@@ -88,6 +88,8 @@ import _class.DateLabelFormatter;
 import dao.SalesDAO;
 import dao.SalesDAOImpl;
 import model.Customer;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class SalesFrame extends JFrame {
 
@@ -145,6 +147,9 @@ public class SalesFrame extends JFrame {
 		table.setFont(new Font("Arial", Font.PLAIN, 15));
 		tableModel = SalesDAOImpl.ModelPrep();
 		table.setModel(tableModel);
+	}
+	public static void updTable(JTable T) {
+		table = T;
 	}
 	public int[] date(int i) {
 		String dateArr[] = customer.get(i).getCart().getSalesdate().split("-");
@@ -245,10 +250,10 @@ public class SalesFrame extends JFrame {
 		        DefaultTableModel tableModel = (DefaultTableModel) SalesFrame.getTable().getModel();
 		        SalesDAOImpl salesDAO = new SalesDAOImpl();
 		        salesDAO.sortCustomerList(tableModel, isSorted);
-
+		     
 		        // Đảo ngược trạng thái cờ
 		        isSorted.set(!isSorted.get()); // Thay đổi giá trị của AtomicBoolean
-
+		        table.setRowSelectionInterval(0, 0);
 		    }
 		});	
 
@@ -406,11 +411,39 @@ public class SalesFrame extends JFrame {
 		gbl_panel_2.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panel_2.setLayout(gbl_panel_2);
 		
-		table.getSelectionModel().addListSelectionListener((ListSelectionListener) new ListSelectionListener(){
-	        public void valueChanged(ListSelectionEvent event) {
-	        	Cart temp = customer.get(table.getSelectedRow()).getCart();
+//		table.getSelectionModel().addListSelectionListener((ListSelectionListener) new ListSelectionListener(){
+//	        public void valueChanged(ListSelectionEvent event) {
+//	        	Cart temp = customer.get(table.getSelectedRow()).getCart();
+////	        	calendar.setTime(temp.getSalesdate());
+//	        	int[]tdate = date(table.getSelectedRow());
+//	        	txtfSalesPerson.setText(temp.getSeller());
+//	    		txtfItemName.setText(temp.getItemname());
+////	    		datePicker.getModel().setDate(calendar.get(calendar.YEAR), calendar.get(calendar.MONTH), calendar.get(calendar.DAY_OF_MONTH));
+//	    		
+//	    		datePicker.getModel().setDate(tdate[0],tdate[1]-1,tdate[2]);
+//	    		datePicker.getModel().setSelected(true);
+//	    		txtfFee.setText(Integer.toString(temp.getFee()));
+//	    		txtfQuant.setText(Integer.toString(temp.getQuantity()));
+//	        }
+//	    });
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JTable source = (JTable)e.getSource();
+	            int row = source.rowAtPoint(e.getPoint() );
+	            System.out.println(row);
+	            Cart temp = customer.get(row).getCart();
+	            String s=source.getModel().getValueAt(row, 0)+"";
+	            System.out.println(s);
+	            for (Customer i : customer) {
+					if(i.getName().equals(s)) {
+						System.out.println(i.getName());
+			            temp = i.getCart();
+					}
+				}
+//	            Cart temp = customer.get(row).getCart();
 //	        	calendar.setTime(temp.getSalesdate());
-	        	int[]tdate = date(table.getSelectedRow());
+	        	int[]tdate = date(row);
 	        	txtfSalesPerson.setText(temp.getSeller());
 	    		txtfItemName.setText(temp.getItemname());
 //	    		datePicker.getModel().setDate(calendar.get(calendar.YEAR), calendar.get(calendar.MONTH), calendar.get(calendar.DAY_OF_MONTH));
@@ -419,8 +452,9 @@ public class SalesFrame extends JFrame {
 	    		datePicker.getModel().setSelected(true);
 	    		txtfFee.setText(Integer.toString(temp.getFee()));
 	    		txtfQuant.setText(Integer.toString(temp.getQuantity()));
-	        }
-	    });
+	            
+			}
+		});
 		
 		JButton btnSave = new JButton("Save Order");
 		btnSave.addActionListener(new ActionListener() {
