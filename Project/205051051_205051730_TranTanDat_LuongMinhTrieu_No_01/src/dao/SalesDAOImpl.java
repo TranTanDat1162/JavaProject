@@ -103,6 +103,7 @@ public class SalesDAOImpl implements SalesDAO {
 		try(Connection connection = DatabaseConnector.getConnection()) {
 			PreparedStatement dm = connection.prepareStatement("SELECT * FROM customer INNER JOIN cart on customer.customerid = cart.cartid;");
 			ResultSet rs = dm.executeQuery();
+			customerlist.clear();
 			while(rs.next()){
 				Cart cart = new Cart(rs.getString(5),rs.getString(6),rs.getDate(7).toString(),rs.getString(8),rs.getInt(9),rs.getInt(10));
 				Customer temp = new Customer(rs.getInt(1),rs.getString(2),rs.getInt(3),cart);
