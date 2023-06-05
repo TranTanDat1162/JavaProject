@@ -54,7 +54,7 @@ public class LoginFrame extends JFrame {
     public LoginFrame() {
     	
         userDAO = new UserDAOImpl();
-        messages = ResourceBundle.getBundle("messages");
+        messages = ResourceBundle.getBundle("loginMessages");
 
         frame = new JFrame();
         frame.setResizable(false);
