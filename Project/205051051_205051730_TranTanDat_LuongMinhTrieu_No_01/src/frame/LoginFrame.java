@@ -208,8 +208,8 @@ public class LoginFrame extends JFrame {
 
                 if (option == JOptionPane.OK_OPTION) {
                     user.setPassword(newPassword);
-                    boolean updated = userDAO.updateUser(user);
-                    if (updated) {
+                    boolean updatedPassword = userDAO.updatePasswordOfUser(user);
+                    if (updatedPassword) {
                         showMessage(messages.getString("passwordChanged"), JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         showMessage(messages.getString("failedToChangePassword"), JOptionPane.ERROR_MESSAGE);

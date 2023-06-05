@@ -53,7 +53,7 @@ public class UserDAOImpl implements UserDAO {
 	    return null;
 	}
 
-	public boolean updateUser(User user) {
+	public boolean updatePasswordOfUser(User user) {
         String query = "UPDATE users SET password = ? WHERE username = ?";
         try (Connection connection = DatabaseConnector.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
