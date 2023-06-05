@@ -103,7 +103,8 @@ public class LoginFrame extends JFrame {
 
         JButton btnLogin = new JButton("Login");
         btnLogin.setFont(new Font("Tahoma", Font.BOLD, 18));
-        btnLogin.addActionListener(new ActionListener() {
+        btnLogin.setActionCommand("login"); // Thiết lập ActionCommand
+        ActionListener loginActionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
                 String password = String.valueOf(passwordField.getPassword());
@@ -130,7 +131,11 @@ public class LoginFrame extends JFrame {
                     }
                 }
             }
-        });
+        };
+        usernameField.addActionListener(loginActionListener);
+        passwordField.addActionListener(loginActionListener);
+
+        btnLogin.addActionListener(loginActionListener);
         btnLogin.setBounds(441, 243, 90, 37);
         frame.getContentPane().add(btnLogin);
 
