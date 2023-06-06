@@ -50,9 +50,14 @@ public class SalesDAOImpl implements SalesDAO {
 
 	@Override
 	public void sortCustomerList(DefaultTableModel tableModel, AtomicBoolean isSorted) {
-	    TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableModel);
 	    JTable table = SalesFrame.getTable();
-	    table.setRowSorter(sorter);
+	    @SuppressWarnings("unchecked")
+		TableRowSorter<TableModel> sorter = (TableRowSorter<TableModel>) table.getRowSorter();
+
+	    if (sorter == null) {
+	        sorter = new TableRowSorter<>(tableModel);
+	        table.setRowSorter(sorter);
+	    }
 
 	    List<RowSorter.SortKey> sortKeys = new ArrayList<>();
 	    sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING)); // Sắp xếp theo cột tên (cột 0) theo thứ tự tăng dần
@@ -66,33 +71,11 @@ public class SalesDAOImpl implements SalesDAO {
 	}
 
 
-
 	public List<Customer> getAllCustomers() {
-	    List<Customer> customerList = new ArrayList<>();
-
-	    String query = "SELECT * FROM customer";
-
-	    try (Connection connection = DatabaseConnector.getConnection();
-	         PreparedStatement statement = connection.prepareStatement(query);
-	         ResultSet resultSet = statement.executeQuery()) {
-
-	        while (resultSet.next()) {
-	            String name = resultSet.getString("name");
-	            int tel = resultSet.getInt("tel");
-
-	            Customer customer = new Customer(name, tel);
-	            customerList.add(customer);
-	        }
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-
+	    List<Customer> customerList = new ArrayList<>(customerlist);
 	    return customerList;
 	}
 
-
-	
 	public static List<Customer> updateCartDAO() {
 		try(Connection connection = DatabaseConnector.getConnection()) {
 			PreparedStatement dm = connection.prepareStatement("SELECT * FROM customer INNER JOIN cart on customer.customerid = cart.cartid;");

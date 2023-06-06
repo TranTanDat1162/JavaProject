@@ -201,7 +201,6 @@ public class SalesFrame extends JFrame {
 		    public void actionPerformed(ActionEvent e) {
 		        // Sắp xếp danh sách tên
 		        DefaultTableModel tableModel = (DefaultTableModel) SalesFrame.getTable().getModel();
-		        SalesDAOImpl salesDAO = new SalesDAOImpl();
 		        salesDAO.sortCustomerList(tableModel, isSorted);
 		     
 		        // Đảo ngược trạng thái cờ
