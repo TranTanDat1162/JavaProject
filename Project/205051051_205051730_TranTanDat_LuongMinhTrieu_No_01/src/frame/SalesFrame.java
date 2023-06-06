@@ -212,7 +212,7 @@ public class SalesFrame extends JFrame {
 
 		                for (int i = 0; i < rowCount; i++) {
 		                    String customerName = (String) table.getValueAt(i, 0);
-		                    System.out.println(customerName);
+		                    System.out.println();
 		                    if (customerName.equalsIgnoreCase(searchName)) {
 		                        table.getSelectionModel().setSelectionInterval(i, i);
 		                        table.scrollRectToVisible(table.getCellRect(i, 0, true));
@@ -409,9 +409,9 @@ public class SalesFrame extends JFrame {
 		gbc_panel_2.gridy = 3;
 		getContentPane().add(panel_2, gbc_panel_2);
 		GridBagLayout gbl_panel_2 = new GridBagLayout();
-		gbl_panel_2.columnWidths = new int[]{0, 0, 0};
+		gbl_panel_2.columnWidths = new int[]{0, 0, 0, 0};
 		gbl_panel_2.rowHeights = new int[]{41, 0};
-		gbl_panel_2.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_2.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panel_2.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panel_2.setLayout(gbl_panel_2);
 		
@@ -474,7 +474,7 @@ public class SalesFrame extends JFrame {
 				temp.setSeller(txtfSalesPerson.getText());
 				temp.setFee(Integer.parseInt(txtfFee.getText()));
 				temp.setQuantity(Integer.parseInt(txtfQuant.getText()));
-				SalesDAOImpl.UpdateSQL(table);
+				SalesDAOImpl.UpdateSQL(table,true);
 			}
 		});
 		
@@ -493,9 +493,24 @@ public class SalesFrame extends JFrame {
 		});
 		btnNewButton_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
+		gbc_btnNewButton_3.insets = new Insets(0, 0, 0, 5);
 		gbc_btnNewButton_3.gridx = 1;
 		gbc_btnNewButton_3.gridy = 0;
 		panel_2.add(btnNewButton_3, gbc_btnNewButton_3);
+		
+		JButton btnSave_1 = new JButton("Delete Order");
+		btnSave_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SalesDAOImpl.UpdateSQL(table,false);
+				setTable();
+				scrollPane.setViewportView(table);
+			}
+		});
+		btnSave_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnSave_1 = new GridBagConstraints();
+		gbc_btnSave_1.gridx = 2;
+		gbc_btnSave_1.gridy = 0;
+		panel_2.add(btnSave_1, gbc_btnSave_1);
 	}
 	
 	private void openLoginModule() {
