@@ -1,42 +1,25 @@
 package frame;
 
-import java.awt.EventQueue;
-
-import frame.SalesFrame;
-import model.Cart;
-import model.Customer;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
-import java.awt.EventQueue;
 import java.awt.Font;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import dao.SalesDAOImpl;
+import model.Cart;
+import model.Customer;
 
 public class AddCustFrame extends JFrame {
 

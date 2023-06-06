@@ -9,16 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-
 import javax.swing.table.TableRowSorter;
-import javax.swing.SortOrder;
-
 
 import _class.DatabaseActionException;
 import _class.DatabaseConnector;
@@ -29,31 +26,28 @@ import model.Customer;
 public class SalesDAOImpl implements SalesDAO {
 
 	private static List<Customer> customerlist = new ArrayList<>();
-	private Cart cart = null;
 	static String col[] = {"Name","Telephone"};
 	
 	@Override
-	public List<Customer> Search(String name, DefaultTableModel tableCustomers) {
+	public List<Customer> search(String searchName) {
 	    List<Customer> searchResults = new ArrayList<>();
+	    boolean customerFound = false;
+
 	    for (Customer customer : customerlist) {
-	        if (customer.getName().equalsIgnoreCase(name)) {
+	        if (customer.getName().toLowerCase().contains(searchName.toLowerCase())) {
 	            searchResults.add(customer);
+	            customerFound = true;
 	        }
 	    }
 
-	    updateCustomerTable(searchResults, tableCustomers);
+	    if (!customerFound) {
+	        JOptionPane.showMessageDialog(null, "Customer not found.", "Search Result", JOptionPane.ERROR_MESSAGE);
+	    }
+
 	    return searchResults;
 	}
 
-	private void updateCustomerTable(List<Customer> searchResults, DefaultTableModel tableCustomers) {
-	    tableCustomers.setRowCount(0); // Xóa tất cả các dòng hiện tại trong bảng
 
-	    for (Customer customer : searchResults) {
-	        Object[] rowData = { customer.getName(), customer.getTel() };
-	        tableCustomers.addRow(rowData);
-	    }
-	}
-	
 	@Override
 	public void sortCustomerList(DefaultTableModel tableModel, AtomicBoolean isSorted) {
 	    TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableModel);
@@ -71,34 +65,34 @@ public class SalesDAOImpl implements SalesDAO {
 	    sorter.sort();
 	}
 
-	
-	@Override
-	public void Add(String name, int tel) {
-		// TODO Auto-generated method stub
-		
+
+
+	public List<Customer> getAllCustomers() {
+	    List<Customer> customerList = new ArrayList<>();
+
+	    String query = "SELECT * FROM customer";
+
+	    try (Connection connection = DatabaseConnector.getConnection();
+	         PreparedStatement statement = connection.prepareStatement(query);
+	         ResultSet resultSet = statement.executeQuery()) {
+
+	        while (resultSet.next()) {
+	            String name = resultSet.getString("name");
+	            int tel = resultSet.getInt("tel");
+
+	            Customer customer = new Customer(name, tel);
+	            customerList.add(customer);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return customerList;
 	}
 
-	@Override
-	public void Save(Customer customer, Cart cart) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	
-//	public static List<Customer>  updateCustomerList(){
-//		try(Connection connection = DatabaseConnector.getConnection()) {
-//			PreparedStatement dm = connection.prepareStatement("SELECT * FROM customer");
-//			ResultSet rs = dm.executeQuery();
-//			customerlist.clear();
-//			while(rs.next()){
-//				Customer temp = new Customer(rs.getInt(1),rs.getString(2),rs.getInt(3));
-//				customerlist.add(temp);
-//			}
-//		return customerlist;
-//		} catch (SQLException e) {
-//			throw new DatabaseActionException(e);
-//		}
-//	}	
-//		
 	public static List<Customer> updateCartDAO() {
 		try(Connection connection = DatabaseConnector.getConnection()) {
 			PreparedStatement dm = connection.prepareStatement("SELECT * FROM customer INNER JOIN cart on customer.customerid = cart.cartid;");
@@ -144,21 +138,4 @@ public class SalesDAOImpl implements SalesDAO {
 			throw new DatabaseActionException(e);
 		}
 	}
-//	public static List<Customer>  updateCustomerList() {
-//		int i = 0;
-//		List<Customer> dataset = null;
-//		for (Customer customertemp : customer) {
-//			int id = customertemp.getCustomerId();
-//			String name = customertemp.getName();
-//			int tel = customertemp.getTel();
-//			Customer data = new Customer(id,name,tel);
-//			dataset = data;
-//			i++;
-//		}
-//		return dataset;
-//	}	
-	
-	public static void AddCustomer() {
-		
-	}	
 }
