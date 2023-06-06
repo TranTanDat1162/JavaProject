@@ -98,7 +98,7 @@ public class SalesDAOImpl implements SalesDAO {
 //			throw new DatabaseActionException(e);
 //		}
 //	}	
-//	
+//		
 	public static List<Customer> updateCartDAO() {
 		try(Connection connection = DatabaseConnector.getConnection()) {
 			PreparedStatement dm = connection.prepareStatement("SELECT * FROM customer INNER JOIN cart on customer.customerid = cart.cartid;");
@@ -125,6 +125,7 @@ public class SalesDAOImpl implements SalesDAO {
 	}
 	public static void UpdateSQL(JTable table) {
 		int i = table.getSelectedRow();
+		System.out.println(i);
 		Customer cs = SalesFrame.customer.get(i);
 		Cart c = SalesFrame.customer.get(i).getCart();
 		if(cs.getCustomerId()==0)
@@ -132,7 +133,6 @@ public class SalesDAOImpl implements SalesDAO {
 		SalesFrame.customer.add(new Customer(table.getValueAt(i,0).toString(),Integer.parseInt(table.getValueAt(i,1).toString())));
 		try(Connection connection = DatabaseConnector.getConnection()){
 			String d = c.getSalesdate().toString();
-			System.out.println(table.getRowCount());
 			String query = "INSERT INTO `customer` VALUES (null,'"+cs.getName()+"',"+cs.getTel()+");";
 			String query2 = "INSERT INTO `cart` VALUES (null,'"+cs.getCustomerId()+"','"+c.getItemname()+"','"+d+"','"+ c.getSeller()+"',"+c.getFee()+","+c.getQuantity() +");";
 			

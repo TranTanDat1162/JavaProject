@@ -8,6 +8,7 @@ import model.Customer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 
@@ -35,6 +36,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import dao.SalesDAOImpl;
+
 public class AddCustFrame extends JFrame {
 
 	/**
@@ -49,23 +52,23 @@ public class AddCustFrame extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AddCustFrame frame = new AddCustFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					AddCustFrame frame = new AddCustFrame(table);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
 	 */
-	public AddCustFrame() {
+	public AddCustFrame(JTable table) {
 		setForeground(new Color(128, 128, 128));
 		setType(Type.UTILITY);
 		setResizable(false);
@@ -118,7 +121,15 @@ public class AddCustFrame extends JFrame {
 			    DefaultTableModel model = (DefaultTableModel) SalesFrame.table.getModel();
 			    model.addRow(row);
 			    Date d = new java.sql.Date(System.currentTimeMillis());
-			    SalesFrame.customer.add(new Customer(a,Integer.parseInt(b),new Cart(null, null, d.toString(), null, 0, 0)));
+			    for (int i = 0; i < table.getRowCount(); i++) {
+			    	System.out.println(table.getValueAt(i, 0).toString());
+					if(a.equals(table.getValueAt(i, 0).toString())) {
+						table.setRowSelectionInterval(i, i);
+						System.out.println(table.getSelectedRow());
+						SalesFrame.customer.add(new Customer(a,Integer.parseInt(b),new Cart(null, null, d.toString(), null, 0, 0)));
+						SalesDAOImpl.UpdateSQL(table);				    	
+					}
+				}
 			    dispose();
 			}
 		});

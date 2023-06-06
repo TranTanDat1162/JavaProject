@@ -211,8 +211,8 @@ public class SalesFrame extends JFrame {
 		                found = false;
 
 		                for (int i = 0; i < rowCount; i++) {
-		                    String customerName = (String) tableModel.getValueAt(i, 0);
-
+		                    String customerName = (String) table.getValueAt(i, 0);
+		                    System.out.println(customerName);
 		                    if (customerName.equalsIgnoreCase(searchName)) {
 		                        table.getSelectionModel().setSelectionInterval(i, i);
 		                        table.scrollRectToVisible(table.getCellRect(i, 0, true));
@@ -232,10 +232,12 @@ public class SalesFrame extends JFrame {
 		JButton btnNewCust = new JButton("Add new customer");
 		btnNewCust.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddCustFrame newcustframe = new AddCustFrame();
+				AddCustFrame newcustframe = new AddCustFrame(table);
 				newcustframe.setVisible(true);
+				
 			}
 		});
+		
 		btnNewCust.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnNewCust);
 
