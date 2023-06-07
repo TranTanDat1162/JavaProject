@@ -27,7 +27,7 @@ public class SalesDAOImpl implements SalesDAO {
 
 	private static List<Customer> customerlist = new ArrayList<>();
 	static String col[] = {"Name","Telephone"};
-	
+
 	@Override
 	public List<Customer> search(String searchName) {
 	    List<Customer> searchResults = new ArrayList<>();
@@ -71,6 +71,7 @@ public class SalesDAOImpl implements SalesDAO {
 	}
 
 
+	@Override
 	public List<Customer> getAllCustomers() {
 	    List<Customer> customerList = new ArrayList<>(customerlist);
 	    return customerList;
@@ -169,10 +170,10 @@ public class SalesDAOImpl implements SalesDAO {
             	max = rs.getInt(1);
                 System.out.println(max);
             }
-            	
+
             String resetcart = "ALTER TABLE `cart` AUTO_INCREMENT = "+(max-1)+";";
     		String resetcust = "ALTER TABLE `customer` AUTO_INCREMENT = "+(max-1)+";";
-    		
+
             statement.executeUpdate(query);
             statement.executeUpdate(query2);
 			statement.executeUpdate(resetcart);
