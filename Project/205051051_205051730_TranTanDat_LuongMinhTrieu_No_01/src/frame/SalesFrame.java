@@ -20,7 +20,9 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
@@ -41,8 +44,6 @@ import dao.SalesDAO;
 import dao.SalesDAOImpl;
 import model.Cart;
 import model.Customer;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
 
 public class SalesFrame extends JFrame {
 
@@ -55,7 +56,7 @@ public class SalesFrame extends JFrame {
 	private LoginFrame loginFrame;
 	SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 	private DefaultTableModel tableModel = new DefaultTableModel();
-	public static List<Customer> customer = new ArrayList<Customer>();
+	public static List<Customer> customer = new ArrayList<>();
 	Calendar calendar = Calendar.getInstance();
 	public static JTable table;
 	private static SalesFrame frame ;
@@ -66,12 +67,13 @@ public class SalesFrame extends JFrame {
 	SalesDAO salesDAO;
 	Object[][] data;
 
-	
+
 	/**
 	 * Launch the application.
 	 */
 	public void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					frame = new SalesFrame();
@@ -83,26 +85,26 @@ public class SalesFrame extends JFrame {
 			}
 		});
 	}
-	
+
 	public void setLoginFrame(LoginFrame loginFrame) {
         this.loginFrame = loginFrame;
     }
-	
+
 	public static JTable getTable() {
 	    return table;
 	}
-	
+
 	public void setTable() {
 		table = new JTable();
 		table.setFont(new Font("Arial", Font.PLAIN, 15));
 		tableModel = SalesDAOImpl.ModelPrep();
 		table.setModel(tableModel);
 	}
-	
+
 	public static void updTable(JTable T) {
 		table = T;
 	}
-	
+
 	public int[] date(int i) {
 		String dateArr[] = customer.get(i).getCart().getSalesdate().split("-");
 		int day = Integer.parseInt(dateArr[0]) ;
@@ -111,14 +113,14 @@ public class SalesFrame extends JFrame {
 		int[] temp = {day,month,year};
 		return temp;
 	}
-	/**	
+	/**
 	 * Create the frame.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public SalesFrame() {
 
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("SaleList");
 
 		new JFrame();
@@ -131,7 +133,7 @@ public class SalesFrame extends JFrame {
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
 		getContentPane().setLayout(gridBagLayout);
-		
+
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -141,20 +143,21 @@ public class SalesFrame extends JFrame {
 		gbc_panel.gridy = 0;
 		getContentPane().add(panel, gbc_panel);
 		panel.setLayout(new GridLayout(1, 3, 0, 0));
-		
+
 		JButton btnSearch = new JButton("Search customer");
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnSearch);
 
 				JButton btnNewCust = new JButton("Add new customer");
 		btnNewCust.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				AddCustFrame newcustframe = new AddCustFrame(table);
 				newcustframe.setVisible(true);
-				
+
 			}
 		});
-		
+
 		btnNewCust.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnNewCust);
 
@@ -166,16 +169,17 @@ public class SalesFrame extends JFrame {
 
 		// Thêm xử lý sự kiện cho nút "Sort customer"
 		btnSort.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
+		    @Override
+			public void actionPerformed(ActionEvent e) {
 		        // Sắp xếp danh sách tên
 		        DefaultTableModel tableModel = (DefaultTableModel) SalesFrame.getTable().getModel();
 		        salesDAO.sortCustomerList(tableModel, isSorted);
-		     
+
 		        // Đảo ngược trạng thái cờ
 		        isSorted.set(!isSorted.get()); // Thay đổi giá trị của AtomicBoolean
 		        table.setRowSelectionInterval(0, 0);
 		    }
-		});	
+		});
 
 		JPanel panel_3 = new JPanel();
 		GridBagConstraints gbc_panel_3 = new GridBagConstraints();
@@ -185,14 +189,14 @@ public class SalesFrame extends JFrame {
 		gbc_panel_3.gridy = 1;
 		getContentPane().add(panel_3, gbc_panel_3);
 		panel_3.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		panel_3.add(scrollPane);
-		
+
 		//Setting up the JTable's model
 		setTable();
 		scrollPane.setViewportView(table);
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new EmptyBorder(0, 0, 0, 0));
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
@@ -206,7 +210,7 @@ public class SalesFrame extends JFrame {
 		gbl_panel_1.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 		gbl_panel_1.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel_1.setLayout(gbl_panel_1);
-		
+
 		JLabel lblItemName = new JLabel("Item name:");
 		lblItemName.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName = new GridBagConstraints();
@@ -215,33 +219,33 @@ public class SalesFrame extends JFrame {
 		gbc_lblItemName.gridx = 0;
 		gbc_lblItemName.gridy = 0;
 		panel_1.add(lblItemName, gbc_lblItemName);
-		
+
 		txtfItemName = new JTextField();
 		GridBagConstraints gbc_txtfItemName = new GridBagConstraints();
 		gbc_txtfItemName.insets = new Insets(0, 0, 5, 0);
 		gbc_txtfItemName.fill = GridBagConstraints.BOTH;
 		gbc_txtfItemName.gridx = 1;
 		gbc_txtfItemName.gridy = 0;
-		
+
 		panel_1.add(txtfItemName, gbc_txtfItemName);
 		txtfItemName.setColumns(10);
-		
+
 		JLabel lblItemName_1 = new JLabel("Sales date:");
 		lblItemName_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_1 = new GridBagConstraints();
-		
+
 		gbc_lblItemName_1.fill = GridBagConstraints.BOTH;
 		gbc_lblItemName_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblItemName_1.gridx = 0;
 		gbc_lblItemName_1.gridy = 1;
 		panel_1.add(lblItemName_1, gbc_lblItemName_1);
-		
-		
+
+
 		Properties p = new Properties();
 		p.put("text.today", "Today");
 		p.put("text.month", "Month");
 		p.put("text.year", "Year");
-		
+
 		model = new UtilDateModel();
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 
@@ -253,7 +257,7 @@ public class SalesFrame extends JFrame {
 		gbc_DatePanel.gridx = 1;
 		gbc_DatePanel.gridy = 1;
 		panel_1.add(datePicker, gbc_DatePanel);
-	
+
 		JLabel lblItemName_2 = new JLabel("Sales person:");
 
 		lblItemName_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -263,7 +267,7 @@ public class SalesFrame extends JFrame {
 		gbc_lblItemName_2.gridx = 0;
 		gbc_lblItemName_2.gridy = 2;
 		panel_1.add(lblItemName_2, gbc_lblItemName_2);
-		
+
 		JComboBox CbxSeller = new JComboBox();
 		CbxSeller.setModel(new DefaultComboBoxModel(new String[] {"Lương Minh Triều", "Trần Tấn Đạt"}));
 		GridBagConstraints gbc_CbxxSeller = new GridBagConstraints();
@@ -272,7 +276,7 @@ public class SalesFrame extends JFrame {
 		gbc_CbxxSeller.gridx = 1;
 		gbc_CbxxSeller.gridy = 2;
 		panel_1.add(CbxSeller, gbc_CbxxSeller);
-		
+
 		JLabel lblItemName_3 = new JLabel("Fee (đ):");
 		lblItemName_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_3 = new GridBagConstraints();
@@ -281,7 +285,7 @@ public class SalesFrame extends JFrame {
 		gbc_lblItemName_3.gridx = 0;
 		gbc_lblItemName_3.gridy = 3;
 		panel_1.add(lblItemName_3, gbc_lblItemName_3);
-		
+
 		txtfFee = new JTextField();
 		txtfFee.setColumns(10);
 
@@ -291,7 +295,7 @@ public class SalesFrame extends JFrame {
 		gbc_txtfFee.gridx = 1;
 		gbc_txtfFee.gridy = 3;
 		panel_1.add(txtfFee, gbc_txtfFee);
-		
+
 		JLabel lblItemName_4 = new JLabel("Quantity:");
 		lblItemName_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_4 = new GridBagConstraints();
@@ -300,7 +304,7 @@ public class SalesFrame extends JFrame {
 		gbc_lblItemName_4.gridx = 0;
 		gbc_lblItemName_4.gridy = 4;
 		panel_1.add(lblItemName_4, gbc_lblItemName_4);
-		
+
 		JComboBox CbxQuant = new JComboBox();
 		CbxQuant.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
 		GridBagConstraints gbc_CbxQuant = new GridBagConstraints();
@@ -308,7 +312,7 @@ public class SalesFrame extends JFrame {
 		gbc_CbxQuant.gridx = 1;
 		gbc_CbxQuant.gridy = 4;
 		panel_1.add(CbxQuant, gbc_CbxQuant);
-		
+
 		JPanel panel_2 = new JPanel();
 		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
 		gbc_panel_2.gridx = 0;
@@ -320,23 +324,7 @@ public class SalesFrame extends JFrame {
 		gbl_panel_2.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panel_2.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panel_2.setLayout(gbl_panel_2);
-		
-//		table.getSelectionModel().addListSelectionListener((ListSelectionListener) new ListSelectionListener(){
-//	        public void valueChanged(ListSelectionEvent event) {
-//	        	Cart temp = customer.get(table.getSelectedRow()).getCart();
-////	        	calendar.setTime(temp.getSalesdate());
-//	        	int[]tdate = date(table.getSelectedRow());
-//	        	txtfSalesPerson.setText(temp.getSeller());
-//	    		txtfItemName.setText(temp.getItemname());
-////	    		datePicker.getModel().setDate(calendar.get(calendar.YEAR), calendar.get(calendar.MONTH), calendar.get(calendar.DAY_OF_MONTH));
-//	    		
-//	    		datePicker.getModel().setDate(tdate[0],tdate[1]-1,tdate[2]);
-//	    		datePicker.getModel().setSelected(true);
-//	    		txtfFee.setText(Integer.toString(temp.getFee()));
-//	    		txtfQuant.setText(Integer.toString(temp.getQuantity()));
-//	        }
-//	    });
-		
+
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -353,28 +341,25 @@ public class SalesFrame extends JFrame {
 			            temp = i.getCart();
 					}
 				}
-	            
-//	            Cart temp = customer.get(row).getCart();
-//	        	calendar.setTime(temp.getSalesdate());
+
 	        	int[]tdate = date(row);
 	        	try {
-//	        		txtfSalesPerson.setText(temp.getSeller());	
 	        		CbxSeller.setSelectedItem(temp.getSeller());
 		    		txtfItemName.setText(temp.getItemname());
-//		    		datePicker.getModel().setDate(calendar.get(calendar.YEAR), calendar.get(calendar.MONTH), calendar.get(calendar.DAY_OF_MONTH));
 		    		datePicker.getModel().setDate(tdate[0],tdate[1]-1,tdate[2]);
 		    		datePicker.getModel().setSelected(true);
 		    		txtfFee.setText(Integer.toString(temp.getFee()));
 //		    		txtfQuant.setText(Integer.toString(temp.getQuantity()));
 		    		CbxQuant.setSelectedItem(Integer.toString(temp.getQuantity()));
 				} catch (Exception e2) {
-					
-				}	            
+
+				}
 			}
 		});
-		
+
 		JButton btnSave = new JButton("Save Order");
 		btnSave.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Cart temp = customer.get(table.getSelectedRow()).getCart();
@@ -390,19 +375,20 @@ public class SalesFrame extends JFrame {
 				} catch (Exception e2) {
 			        JOptionPane.showMessageDialog(frame, "Cart was already empty", "Message", JOptionPane.INFORMATION_MESSAGE);
 				}
-				
+
 			}
 		});
-		
+
 		btnSave.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnSave = new GridBagConstraints();
 		gbc_btnSave.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSave.gridx = 0;
 		gbc_btnSave.gridy = 0;
-		panel_2.add(btnSave, gbc_btnSave);	
-		
+		panel_2.add(btnSave, gbc_btnSave);
+
 		JButton btnNewButton_3 = new JButton("Log Out");
 		btnNewButton_3.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				openLoginModule();
 			}
@@ -413,9 +399,10 @@ public class SalesFrame extends JFrame {
 		gbc_btnNewButton_3.gridx = 1;
 		gbc_btnNewButton_3.gridy = 0;
 		panel_2.add(btnNewButton_3, gbc_btnNewButton_3);
-		
+
 		JButton btnDeleteOrder = new JButton("Delete Order");
 		btnDeleteOrder.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				SalesDAOImpl.DeleteRow(table);
 				setTable();
@@ -427,7 +414,7 @@ public class SalesFrame extends JFrame {
 		gbc_btnDeleteOrder.gridx = 2;
 		gbc_btnDeleteOrder.gridy = 0;
 		panel_2.add(btnDeleteOrder, gbc_btnDeleteOrder);
-		
+
 		btnSearch.addActionListener(new ActionListener() {
 			@Override
 		    public void actionPerformed(ActionEvent e) {
@@ -436,15 +423,6 @@ public class SalesFrame extends JFrame {
 		        if (searchName != null) {
 		            if (searchName.trim().isEmpty()) {
 		                // Nếu tên tìm kiếm rỗng, thực hiện việc hiển thị lại danh sách khách hàng ban đầu
-//		                List<Customer> initialCustomerList = salesDAO.getAllCustomers();
-//
-//		                DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-//		                tableModel.setRowCount(0);
-//
-//		                for (Customer customer : initialCustomerList) {
-//		                    Object[] rowData = { customer.getName(), customer.getTel() };
-//		                    tableModel.addRow(rowData);
-//		                }
 		        		tableModel = SalesDAOImpl.ModelPrep();
 		        		table.setModel(tableModel);
 		        		scrollPane.setViewportView(table);
@@ -465,13 +443,13 @@ public class SalesFrame extends JFrame {
 
 
 	}
-	
-	
+
+
 	private void openLoginModule() {
         this.setVisible(false);
         tableModel.setRowCount(0);
         table.removeAll();
-        LoginFrame loginFrame = new LoginFrame(); 
+        LoginFrame loginFrame = new LoginFrame();
         loginFrame.setVisible(false);
     }
 }
