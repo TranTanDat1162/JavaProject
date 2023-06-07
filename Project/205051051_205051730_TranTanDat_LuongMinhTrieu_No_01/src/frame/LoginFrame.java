@@ -12,6 +12,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -97,7 +100,7 @@ public class LoginFrame extends JFrame {
         btnLogin.setActionCommand("login"); // Thiết lập ActionCommand
         ActionListener loginActionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
+            	String username = usernameField.getText();
                 String password = String.valueOf(passwordField.getPassword());
 
                 User user = userDAO.login(username);
@@ -107,18 +110,39 @@ public class LoginFrame extends JFrame {
                     showMessage(messages.getString("userNotExist"), JOptionPane.ERROR_MESSAGE);
                 } else {
                     // Người dùng tồn tại
-                    if (user.getPassword().equals(password)) {
+                    if (validatePassword(password, user.getPassword())) {
                         // Đăng nhập thành công
                         showMessage(messages.getString("loginSuccessful"), JOptionPane.INFORMATION_MESSAGE);
-                        try {
-                            openSalesModule();
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
+                        openSalesModule();
                     } else {
                         // Sai mật khẩu
                         showMessage(messages.getString("incorrectPassword"), JOptionPane.ERROR_MESSAGE);
                     }
+                }
+            }
+            private boolean validatePassword(String password, String hashedPassword) {
+                // Thực hiện kiểm tra mật khẩu bằng cách so sánh giá trị băm
+
+                try {
+                    // Tạo một đối tượng MessageDigest với thuật toán MD5
+                    MessageDigest md = MessageDigest.getInstance("MD5");
+
+                    // Băm mật khẩu nhập vào
+                    byte[] hashedBytes = md.digest(password.getBytes());
+
+                    // Chuyển đổi giá trị băm sang chuỗi hex
+                    StringBuilder sb = new StringBuilder();
+                    for (byte b : hashedBytes) {
+                        sb.append(String.format("%02x", b));
+                    }
+                    String hashedInputPassword = sb.toString();
+
+                    // So sánh giá trị băm của mật khẩu nhập vào với giá trị băm đã lưu
+                    return hashedPassword.equals(hashedInputPassword);
+                } catch (NoSuchAlgorithmException e) {
+                    // Xử lý nếu thuật toán băm không khả dụng
+                    e.printStackTrace();
+                    return false;
                 }
             }
         };
@@ -128,7 +152,7 @@ public class LoginFrame extends JFrame {
         btnLogin.addActionListener(loginActionListener);
         btnLogin.setBounds(441, 243, 90, 37);
         frame.getContentPane().add(btnLogin);
-
+        
         JButton btnCancel = new JButton("Cancel");
         btnCancel.setFont(new Font("Tahoma", Font.BOLD, 18));
         btnCancel.addActionListener(new ActionListener() {
@@ -207,7 +231,8 @@ public class LoginFrame extends JFrame {
                 } while (!newPassword.equals(confirmPassword));
 
                 if (option == JOptionPane.OK_OPTION) {
-                    user.setPassword(newPassword);
+                    String hashedPassword = hashPassword(newPassword);
+                    user.setPassword(hashedPassword);
                     boolean updatedPassword = userDAO.updatePasswordOfUser(user);
                     if (updatedPassword) {
                         showMessage(messages.getString("passwordChanged"), JOptionPane.INFORMATION_MESSAGE);
@@ -216,7 +241,25 @@ public class LoginFrame extends JFrame {
                     }
                 }
             }
+            private String hashPassword(String password) {
+                String hashedPassword = null;
+                try {
+                    MessageDigest md = MessageDigest.getInstance("MD5");
+                    byte[] hashedBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
+                    StringBuilder sb = new StringBuilder();
+                    for (byte b : hashedBytes) {
+                        sb.append(String.format("%02x", b));
+                    }
+                    hashedPassword = sb.toString();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+                return hashedPassword;
+            }
         });
+
+        
+
 
         frame.setVisible(true);
     }
