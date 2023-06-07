@@ -153,6 +153,8 @@ public class LoginFrame extends JFrame {
         btnLogin.setBounds(441, 243, 90, 37);
         frame.getContentPane().add(btnLogin);
         
+        
+
         JButton btnCancel = new JButton("Cancel");
         btnCancel.setFont(new Font("Tahoma", Font.BOLD, 18));
         btnCancel.addActionListener(new ActionListener() {
