@@ -123,7 +123,7 @@ public class SalesDAOImpl implements SalesDAO {
 		}
 		return tableModel;
 	}
-	public static void UpdateSQL(JTable table, Boolean t) {
+	public static void UpdateSQL(JTable table) {
 		int i = table.getSelectedRow();
 		System.out.println(i);
 		Customer cs = SalesFrame.customer.get(i);
@@ -132,23 +132,14 @@ public class SalesDAOImpl implements SalesDAO {
 			cs.setCustomerId(table.getRowCount());
 		SalesFrame.customer.add(new Customer(table.getValueAt(i,0).toString(),Integer.parseInt(table.getValueAt(i,1).toString())));
 		try(Connection connection = DatabaseConnector.getConnection()){
-			String d, query, query2;
+			String d = c.getSalesdate().toString();
+			String query = "INSERT INTO `customer` VALUES (null,'"+cs.getName()+"',"+cs.getTel()+");";
+			String query2 = "INSERT INTO `cart` VALUES (null,'"+cs.getCustomerId()+"','"+c.getItemname()+"','"+d+"','"+ c.getSeller()+"',"+c.getFee()+","+c.getQuantity() +");";
+			
 			Statement stmt = connection.createStatement();
-			if(t == true) {		
-				d = c.getSalesdate().toString();
-				query = "INSERT INTO `customer` VALUES (null,'"+cs.getName()+"',"+cs.getTel()+");";
-				query2 = "INSERT INTO `cart` VALUES (null,'"+cs.getCustomerId()+"','"+c.getItemname()+"','"+d+"','"+ c.getSeller()+"',"+c.getFee()+","+c.getQuantity() +");";
-			}
-			else {
-				String resetcart = "ALTER TABLE `cart` AUTO_INCREMENT = "+(i-1)+";";
-				String resetcust = "ALTER TABLE `customer` AUTO_INCREMENT = "+(i-1)+";";
-				query = "DELETE FROM `cart` WHERE (`customerid` = '"+c.getCustomerID()+"')";
-				query2 = "DELETE FROM `customer` WHERE (`customerid` = '"+cs.getCustomerId()+"')";
-				stmt.executeUpdate(resetcart);
-				stmt.executeUpdate(resetcust);
-			}
-		stmt.executeUpdate(query);
-		stmt.executeUpdate(query2);
+			
+			stmt.executeUpdate(query);
+			stmt.executeUpdate(query2);
 		} catch (SQLException e) {
 			throw new DatabaseActionException(e);
 		}
