@@ -101,24 +101,58 @@ public class SalesDAOImpl implements SalesDAO {
 		return tableModel;
 	}
 	public static void UpdateSQL(JTable table) {
-		int i = table.getSelectedRow();
-		System.out.println(i);
-		Customer cs = SalesFrame.customer.get(i);
-		Cart c = SalesFrame.customer.get(i).getCart();
-		if(cs.getCustomerId()==0)
-			cs.setCustomerId(table.getRowCount());
-		SalesFrame.customer.add(new Customer(table.getValueAt(i,0).toString(),Integer.parseInt(table.getValueAt(i,1).toString())));
-		try(Connection connection = DatabaseConnector.getConnection()){
-			String d = c.getSalesdate().toString();
-			String query = "INSERT INTO `customer` VALUES (null,'"+cs.getName()+"',"+cs.getTel()+");";
-			String query2 = "INSERT INTO `cart` VALUES (null,'"+cs.getCustomerId()+"','"+c.getItemname()+"','"+d+"','"+ c.getSeller()+"',"+c.getFee()+","+c.getQuantity() +");";
-			
-			Statement stmt = connection.createStatement();
-			
-			stmt.executeUpdate(query);
-			stmt.executeUpdate(query2);
-		} catch (SQLException e) {
-			throw new DatabaseActionException(e);
-		}
+	    int selectedRowIndex = table.getSelectedRow();
+	    Customer customer = SalesFrame.customer.get(selectedRowIndex);
+	    Cart cart = customer.getCart();
+
+	    if (customer.getCustomerId() != 0) {
+	        // Cập nhật đơn hàng đã tồn tại
+	        try (Connection connection = DatabaseConnector.getConnection()) {
+	            String query = "UPDATE `cart` SET itemname = ?, salesDate = ?, salesPerson = ?, fee = ?, quantity = ? WHERE customerId = ?";
+	            PreparedStatement statement = connection.prepareStatement(query);
+	            statement.setString(1, cart.getItemname());
+	            statement.setString(2, cart.getSalesdate());
+	            statement.setString(3, cart.getSeller());
+	            statement.setInt(4, cart.getFee());
+	            statement.setInt(5, cart.getQuantity());
+	            statement.setInt(6, customer.getCustomerId());
+
+	            statement.executeUpdate();
+	        } catch (SQLException e) {
+	            throw new DatabaseActionException(e);
+	        }
+	    } else {
+	        // Thêm mới đơn hàng
+	        try (Connection connection = DatabaseConnector.getConnection()) {
+	            String query = "INSERT INTO `customer` (name, tel) VALUES (?, ?)";
+	            PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+	            statement.setString(1, customer.getName());
+	            statement.setInt(2, customer.getTel());
+
+	            statement.executeUpdate();
+
+	            // Lấy customerId được sinh tự động
+	            ResultSet generatedKeys = statement.getGeneratedKeys();
+	            if (generatedKeys.next()) {
+	                int customerId = generatedKeys.getInt(1);
+	                customer.setCustomerId(customerId);
+
+	                // Thêm mới đơn hàng
+	                query = "INSERT INTO `cart` (customerId, itemname, salesDate, salesPerson, fee, quantity) VALUES (?, ?, ?, ?, ?, ?)";
+	                statement = connection.prepareStatement(query);
+	                statement.setInt(1, customerId);
+	                statement.setString(2, cart.getItemname());
+	                statement.setString(3, cart.getSalesdate());
+	                statement.setString(4, cart.getSeller());
+	                statement.setInt(5, cart.getFee());
+	                statement.setInt(6, cart.getQuantity());
+
+	                statement.executeUpdate();
+	            }
+	        } catch (SQLException e) {
+	            throw new DatabaseActionException(e);
+	        }
+	    }
 	}
+
 }
