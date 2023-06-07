@@ -97,7 +97,7 @@ public class SalesDAOImpl implements SalesDAO {
 	    return customerList;
 	}
 
-	public List<Customer> updateCartDAO() {
+	public static List<Customer> updateCartDAO() {
 		try(Connection connection = DatabaseConnector.getConnection()) {
 			PreparedStatement dm = connection.prepareStatement("SELECT * FROM customer INNER JOIN cart on customer.customerid = cart.cartid;");
 			ResultSet rs = dm.executeQuery();
@@ -112,8 +112,8 @@ public class SalesDAOImpl implements SalesDAO {
 			throw new DatabaseActionException(e);
 		}
 	}
-	public DefaultTableModel ModelPrep() {
-		SalesFrame.customer = updateCartDAO();
+	public static DefaultTableModel ModelPrep() {
+		SalesFrame.customer = SalesDAOImpl.updateCartDAO();
 		DefaultTableModel tableModel = new DefaultTableModel(col, 0);
 		for (Customer temp : customerlist) {
 			Object[] t = {temp.getName(), temp.getTel()};
@@ -121,7 +121,7 @@ public class SalesDAOImpl implements SalesDAO {
 		}
 		return tableModel;
 	}
-	public void UpdateSQL(JTable table) {
+	public static void UpdateSQL(JTable table) {
 	    int selectedRowIndex = table.getSelectedRow();
 	    Customer customer = SalesFrame.customer.get(selectedRowIndex);
 	    Cart cart = customer.getCart();
