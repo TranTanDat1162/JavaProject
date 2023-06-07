@@ -31,6 +31,8 @@ public class AddCustFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
+	SalesDAOImpl salesimpl = new SalesDAOImpl();
+
 
 	/**
 	 * Create the frame.
@@ -94,7 +96,7 @@ public class AddCustFrame extends JFrame {
 						table.setRowSelectionInterval(i, i);
 						System.out.println(table.getSelectedRow());
 						SalesFrame.customer.add(new Customer(a,Integer.parseInt(b),new Cart(null, null, d.toString(), null, 0, 0)));
-						SalesDAOImpl.UpdateSQL(table);				    	
+						salesimpl.UpdateSQL(table);				    	
 					}
 				}
 			    dispose();

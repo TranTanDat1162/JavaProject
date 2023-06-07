@@ -63,7 +63,7 @@ public class SalesFrame extends JFrame {
 	public JTextField txtfItemName;
 	public JTextField txtfFee;
 	public UtilDateModel model;
-
+	SalesDAOImpl salesimpl = new SalesDAOImpl();
 	SalesDAO salesDAO;
 	Object[][] data;
 
@@ -97,7 +97,7 @@ public class SalesFrame extends JFrame {
 	public void setTable() {
 		table = new JTable();
 		table.setFont(new Font("Arial", Font.PLAIN, 15));
-		tableModel = SalesDAOImpl.ModelPrep();
+		tableModel = salesimpl.ModelPrep();
 		table.setModel(tableModel);
 	}
 
@@ -371,7 +371,7 @@ public class SalesFrame extends JFrame {
 //					temp.setQuantity(Integer.parseInt(txtfQuant.getText()));
 					temp.setQuantity(Integer.parseInt((String) CbxQuant.getSelectedItem()));
 
-					SalesDAOImpl.UpdateSQL(table);
+					salesimpl.UpdateSQL(table);
 				} catch (Exception e2) {
 			        JOptionPane.showMessageDialog(frame, "Cart was already empty", "Message", JOptionPane.INFORMATION_MESSAGE);
 				}
@@ -423,7 +423,7 @@ public class SalesFrame extends JFrame {
 		        if (searchName != null) {
 		            if (searchName.trim().isEmpty()) {
 		                // Nếu tên tìm kiếm rỗng, thực hiện việc hiển thị lại danh sách khách hàng ban đầu
-		        		tableModel = SalesDAOImpl.ModelPrep();
+		        		tableModel = salesimpl.ModelPrep();
 		        		table.setModel(tableModel);
 		        		scrollPane.setViewportView(table);
 		            } else {
