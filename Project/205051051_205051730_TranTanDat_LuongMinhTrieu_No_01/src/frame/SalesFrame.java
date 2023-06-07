@@ -9,9 +9,14 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -22,61 +27,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.border.EmptyBorder;
-
-import org.jdatepicker.*;
-import org.jdatepicker.impl.*;
-
-import _class.DateLabelFormatter;
-import model.Cart;
-import model.Customer;
-
-import java.awt.GridLayout;
-import javax.swing.JToggleButton;
-import javax.swing.JScrollPane;
-import javax.swing.JButton;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Window.Type;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.stream.Collectors;
-import java.awt.event.ActionEvent;
-import java.awt.FlowLayout;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.BoxLayout;
-import java.awt.Component;
-import javax.swing.JTable;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSplitPane;
-import javax.swing.SpringLayout;
 import javax.swing.JTextField;
-import java.awt.Font;
-import javax.swing.JTextArea;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.EtchedBorder;
-import java.lang.reflect.Array;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -87,9 +39,8 @@ import org.jdatepicker.impl.UtilDateModel;
 import _class.DateLabelFormatter;
 import dao.SalesDAO;
 import dao.SalesDAOImpl;
+import model.Cart;
 import model.Customer;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class SalesFrame extends JFrame {
 
@@ -100,7 +51,6 @@ public class SalesFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("unused")
 	private LoginFrame loginFrame;
-	private JFrame frame;
 	SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 	private DefaultTableModel tableModel = new DefaultTableModel();
 	public static List<Customer> customer = new ArrayList<Customer>();
@@ -171,7 +121,7 @@ public class SalesFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("SaleList");
 
-		frame = new JFrame();
+		new JFrame();
 		salesDAO = new SalesDAOImpl();
 		setType(Type.UTILITY);
 
@@ -199,30 +149,29 @@ public class SalesFrame extends JFrame {
 
 		btnSearch.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        String searchName = "";
-		        boolean found = false;
+		        String searchName = JOptionPane.showInputDialog("Enter customer name:");
 
-		        while (!found && searchName != null) {
-		            searchName = JOptionPane.showInputDialog("Enter customer name:");
+		        if (searchName != null) {
+		            if (searchName.trim().isEmpty()) {
+		                // Nếu tên tìm kiếm rỗng, thực hiện việc hiển thị lại danh sách khách hàng ban đầu
+		                List<Customer> initialCustomerList = salesDAO.getAllCustomers();
 
-		            if (searchName != null) {
 		                DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-		                int rowCount = tableModel.getRowCount();
-		                found = false;
+		                tableModel.setRowCount(0);
 
-		                for (int i = 0; i < rowCount; i++) {
-		                    String customerName = (String) table.getValueAt(i, 0);
-		                    System.out.println(customerName);
-		                    if (customerName.equalsIgnoreCase(searchName)) {
-		                        table.getSelectionModel().setSelectionInterval(i, i);
-		                        table.scrollRectToVisible(table.getCellRect(i, 0, true));
-		                        found = true;
-		                        break;
-		                    }
+		                for (Customer customer : initialCustomerList) {
+		                    Object[] rowData = { customer.getName(), customer.getTel() };
+		                    tableModel.addRow(rowData);
 		                }
+		            } else {
+		                List<Customer> searchResults = salesDAO.search(searchName);
 
-		                if (!found) {
-		                    JOptionPane.showMessageDialog(SalesFrame.this, "Customer not found.");
+		                DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+		                tableModel.setRowCount(0);
+
+		                for (Customer customer : searchResults) {
+		                    Object[] rowData = { customer.getName(), customer.getTel() };
+		                    tableModel.addRow(rowData);
 		                }
 		            }
 		        }
@@ -252,7 +201,6 @@ public class SalesFrame extends JFrame {
 		    public void actionPerformed(ActionEvent e) {
 		        // Sắp xếp danh sách tên
 		        DefaultTableModel tableModel = (DefaultTableModel) SalesFrame.getTable().getModel();
-		        SalesDAOImpl salesDAO = new SalesDAOImpl();
 		        salesDAO.sortCustomerList(tableModel, isSorted);
 		     
 		        // Đảo ngược trạng thái cờ
