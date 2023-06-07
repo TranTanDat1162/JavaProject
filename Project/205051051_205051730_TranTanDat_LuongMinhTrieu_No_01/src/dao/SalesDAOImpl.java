@@ -124,13 +124,12 @@ public class SalesDAOImpl implements SalesDAO {
 	    } else {
 	        // Thêm mới đơn hàng
 	        try (Connection connection = DatabaseConnector.getConnection()) {
-	            String query = "INSERT INTO `customer` (name, tel) VALUES (?, ?)";
+	        	String query = "INSERT INTO `customer` (name, tel) VALUES (?, ?)";
 	            PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 	            statement.setString(1, customer.getName());
 	            statement.setInt(2, customer.getTel());
 
 	            statement.executeUpdate();
-
 	            // Lấy customerId được sinh tự động
 	            ResultSet generatedKeys = statement.getGeneratedKeys();
 	            if (generatedKeys.next()) {
@@ -153,6 +152,34 @@ public class SalesDAOImpl implements SalesDAO {
 	            throw new DatabaseActionException(e);
 	        }
 	    }
+	}
+	public static void DeleteRow(JTable table) {
+	    int i = table.getSelectedRow();
+	    Customer cs = SalesFrame.customer.get(i);
+	    Cart c = cs.getCart();
+	    int max = i;
+	    String getmax = "SELECT MAX( `customerid` ) FROM `cart` ;";
+        String query = "DELETE FROM `cart` WHERE (`customerid` = '"+c.getCustomerID()+"')";
+		String query2 = "DELETE FROM `customer` WHERE (`customerid` = '"+cs.getCustomerId()+"')";
+	    try (Connection connection = DatabaseConnector.getConnection()) {
+            Statement statement = connection.createStatement();
+            Statement get = connection.createStatement();
+            ResultSet rs = get.executeQuery(getmax);
+            if(rs.next()) {
+            	max = rs.getInt(1);
+                System.out.println(max);
+            }
+            	
+            String resetcart = "ALTER TABLE `cart` AUTO_INCREMENT = "+(max-1)+";";
+    		String resetcust = "ALTER TABLE `customer` AUTO_INCREMENT = "+(max-1)+";";
+    		
+            statement.executeUpdate(query);
+            statement.executeUpdate(query2);
+			statement.executeUpdate(resetcart);
+			statement.executeUpdate(resetcust);
+        } catch (SQLException e) {
+            throw new DatabaseActionException(e);
+        }
 	}
 
 }

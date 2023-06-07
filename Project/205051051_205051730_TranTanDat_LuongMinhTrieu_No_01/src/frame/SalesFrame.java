@@ -41,6 +41,8 @@ import dao.SalesDAO;
 import dao.SalesDAOImpl;
 import model.Cart;
 import model.Customer;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class SalesFrame extends JFrame {
 
@@ -56,11 +58,9 @@ public class SalesFrame extends JFrame {
 	public static List<Customer> customer = new ArrayList<Customer>();
 	Calendar calendar = Calendar.getInstance();
 	public static JTable table;
-
+	private static SalesFrame frame ;
 	public JTextField txtfItemName;
 	public JTextField txtfFee;
-	public JTextField txtfQuant;
-	public JTextField txtfSalesPerson;
 	public UtilDateModel model;
 
 	SalesDAO salesDAO;
@@ -74,7 +74,7 @@ public class SalesFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SalesFrame frame = new SalesFrame();
+					frame = new SalesFrame();
 					frame.pack();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -123,7 +123,6 @@ public class SalesFrame extends JFrame {
 
 		new JFrame();
 		salesDAO = new SalesDAOImpl();
-		setType(Type.UTILITY);
 
 		setBounds(100, 100, 800, 550);
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -147,38 +146,7 @@ public class SalesFrame extends JFrame {
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel.add(btnSearch);
 
-		btnSearch.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        String searchName = JOptionPane.showInputDialog("Enter customer name:");
-
-		        if (searchName != null) {
-		            if (searchName.trim().isEmpty()) {
-		                // Nếu tên tìm kiếm rỗng, thực hiện việc hiển thị lại danh sách khách hàng ban đầu
-		                List<Customer> initialCustomerList = salesDAO.getAllCustomers();
-
-		                DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-		                tableModel.setRowCount(0);
-
-		                for (Customer customer : initialCustomerList) {
-		                    Object[] rowData = { customer.getName(), customer.getTel() };
-		                    tableModel.addRow(rowData);
-		                }
-		            } else {
-		                List<Customer> searchResults = salesDAO.search(searchName);
-
-		                DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-		                tableModel.setRowCount(0);
-
-		                for (Customer customer : searchResults) {
-		                    Object[] rowData = { customer.getName(), customer.getTel() };
-		                    tableModel.addRow(rowData);
-		                }
-		            }
-		        }
-		    }
-		});
-
-		JButton btnNewCust = new JButton("Add new customer");
+				JButton btnNewCust = new JButton("Add new customer");
 		btnNewCust.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AddCustFrame newcustframe = new AddCustFrame(table);
@@ -242,15 +210,13 @@ public class SalesFrame extends JFrame {
 		JLabel lblItemName = new JLabel("Item name:");
 		lblItemName.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName = new GridBagConstraints();
-		gbc_lblItemName.anchor = GridBagConstraints.WEST;
-		gbc_lblItemName.fill = GridBagConstraints.VERTICAL;
+		gbc_lblItemName.fill = GridBagConstraints.BOTH;
 		gbc_lblItemName.insets = new Insets(0, 0, 5, 5);
 		gbc_lblItemName.gridx = 0;
 		gbc_lblItemName.gridy = 0;
 		panel_1.add(lblItemName, gbc_lblItemName);
 		
 		txtfItemName = new JTextField();
-		txtfItemName.setText(customer.get(0).getCart().getItemname());
 		GridBagConstraints gbc_txtfItemName = new GridBagConstraints();
 		gbc_txtfItemName.insets = new Insets(0, 0, 5, 0);
 		gbc_txtfItemName.fill = GridBagConstraints.BOTH;
@@ -277,8 +243,6 @@ public class SalesFrame extends JFrame {
 		p.put("text.year", "Year");
 		
 		model = new UtilDateModel();
-		int defaultdate[] = date(0);
-		model.setDate(defaultdate[0], defaultdate[1], defaultdate[2]);
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel,new DateLabelFormatter());
@@ -294,28 +258,25 @@ public class SalesFrame extends JFrame {
 
 		lblItemName_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_2 = new GridBagConstraints();
-		gbc_lblItemName_2.anchor = GridBagConstraints.WEST;
-		gbc_lblItemName_2.fill = GridBagConstraints.VERTICAL;
+		gbc_lblItemName_2.fill = GridBagConstraints.BOTH;
 		gbc_lblItemName_2.insets = new Insets(0, 0, 5, 5);
 		gbc_lblItemName_2.gridx = 0;
 		gbc_lblItemName_2.gridy = 2;
 		panel_1.add(lblItemName_2, gbc_lblItemName_2);
 		
-		txtfSalesPerson = new JTextField();
-		txtfSalesPerson.setColumns(10);
-		txtfSalesPerson.setText(customer.get(0).getCart().getSeller());
-		GridBagConstraints gbc_txtfSalesPerson = new GridBagConstraints();
-		gbc_txtfSalesPerson.insets = new Insets(0, 0, 5, 0);
-		gbc_txtfSalesPerson.fill = GridBagConstraints.BOTH;
-		gbc_txtfSalesPerson.gridx = 1;
-		gbc_txtfSalesPerson.gridy = 2;
-		panel_1.add(txtfSalesPerson, gbc_txtfSalesPerson);
+		JComboBox CbxSeller = new JComboBox();
+		CbxSeller.setModel(new DefaultComboBoxModel(new String[] {"Lương Minh Triều", "Trần Tấn Đạt"}));
+		GridBagConstraints gbc_CbxxSeller = new GridBagConstraints();
+		gbc_CbxxSeller.insets = new Insets(0, 0, 5, 0);
+		gbc_CbxxSeller.fill = GridBagConstraints.HORIZONTAL;
+		gbc_CbxxSeller.gridx = 1;
+		gbc_CbxxSeller.gridy = 2;
+		panel_1.add(CbxSeller, gbc_CbxxSeller);
 		
 		JLabel lblItemName_3 = new JLabel("Fee (đ):");
 		lblItemName_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_3 = new GridBagConstraints();
-		gbc_lblItemName_3.anchor = GridBagConstraints.WEST;
-		gbc_lblItemName_3.fill = GridBagConstraints.VERTICAL;
+		gbc_lblItemName_3.fill = GridBagConstraints.BOTH;
 		gbc_lblItemName_3.insets = new Insets(0, 0, 5, 5);
 		gbc_lblItemName_3.gridx = 0;
 		gbc_lblItemName_3.gridy = 3;
@@ -324,7 +285,6 @@ public class SalesFrame extends JFrame {
 		txtfFee = new JTextField();
 		txtfFee.setColumns(10);
 
-		txtfFee.setText(Integer.toString(customer.get(0).getCart().getFee()));
 		GridBagConstraints gbc_txtfFee = new GridBagConstraints();
 		gbc_txtfFee.insets = new Insets(0, 0, 5, 0);
 		gbc_txtfFee.fill = GridBagConstraints.BOTH;
@@ -335,21 +295,19 @@ public class SalesFrame extends JFrame {
 		JLabel lblItemName_4 = new JLabel("Quantity:");
 		lblItemName_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_4 = new GridBagConstraints();
-		gbc_lblItemName_4.anchor = GridBagConstraints.WEST;
-		gbc_lblItemName_4.fill = GridBagConstraints.VERTICAL;
+		gbc_lblItemName_4.fill = GridBagConstraints.BOTH;
 		gbc_lblItemName_4.insets = new Insets(0, 0, 0, 5);
 		gbc_lblItemName_4.gridx = 0;
 		gbc_lblItemName_4.gridy = 4;
 		panel_1.add(lblItemName_4, gbc_lblItemName_4);
 		
-		txtfQuant = new JTextField();
-		txtfQuant.setColumns(10);
-		txtfQuant.setText(Integer.toString(customer.get(0).getCart().getQuantity()));
-		GridBagConstraints gbc_txtfQuant = new GridBagConstraints();
-		gbc_txtfQuant.fill = GridBagConstraints.BOTH;
-		gbc_txtfQuant.gridx = 1;
-		gbc_txtfQuant.gridy = 4;
-		panel_1.add(txtfQuant, gbc_txtfQuant);
+		JComboBox CbxQuant = new JComboBox();
+		CbxQuant.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
+		GridBagConstraints gbc_CbxQuant = new GridBagConstraints();
+		gbc_CbxQuant.fill = GridBagConstraints.HORIZONTAL;
+		gbc_CbxQuant.gridx = 1;
+		gbc_CbxQuant.gridy = 4;
+		panel_1.add(CbxQuant, gbc_CbxQuant);
 		
 		JPanel panel_2 = new JPanel();
 		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
@@ -357,9 +315,9 @@ public class SalesFrame extends JFrame {
 		gbc_panel_2.gridy = 3;
 		getContentPane().add(panel_2, gbc_panel_2);
 		GridBagLayout gbl_panel_2 = new GridBagLayout();
-		gbl_panel_2.columnWidths = new int[]{0, 0, 0};
+		gbl_panel_2.columnWidths = new int[]{0, 0, 0, 0};
 		gbl_panel_2.rowHeights = new int[]{41, 0};
-		gbl_panel_2.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_2.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panel_2.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panel_2.setLayout(gbl_panel_2);
 		
@@ -400,13 +358,15 @@ public class SalesFrame extends JFrame {
 //	        	calendar.setTime(temp.getSalesdate());
 	        	int[]tdate = date(row);
 	        	try {
-	        		txtfSalesPerson.setText(temp.getSeller());
+//	        		txtfSalesPerson.setText(temp.getSeller());	
+	        		CbxSeller.setSelectedItem(temp.getSeller());
 		    		txtfItemName.setText(temp.getItemname());
 //		    		datePicker.getModel().setDate(calendar.get(calendar.YEAR), calendar.get(calendar.MONTH), calendar.get(calendar.DAY_OF_MONTH));
 		    		datePicker.getModel().setDate(tdate[0],tdate[1]-1,tdate[2]);
 		    		datePicker.getModel().setSelected(true);
 		    		txtfFee.setText(Integer.toString(temp.getFee()));
-		    		txtfQuant.setText(Integer.toString(temp.getQuantity()));
+//		    		txtfQuant.setText(Integer.toString(temp.getQuantity()));
+		    		CbxQuant.setSelectedItem(Integer.toString(temp.getQuantity()));
 				} catch (Exception e2) {
 					
 				}	            
@@ -416,13 +376,21 @@ public class SalesFrame extends JFrame {
 		JButton btnSave = new JButton("Save Order");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Cart temp = customer.get(table.getSelectedRow()).getCart();
-				temp.setItemname(txtfItemName.getText());
-				temp.setSalesdate(datePicker.getJFormattedTextField().getText());
-				temp.setSeller(txtfSalesPerson.getText());
-				temp.setFee(Integer.parseInt(txtfFee.getText()));
-				temp.setQuantity(Integer.parseInt(txtfQuant.getText()));
-				SalesDAOImpl.UpdateSQL(table);
+				try {
+					Cart temp = customer.get(table.getSelectedRow()).getCart();
+					temp.setItemname(txtfItemName.getText());
+					temp.setSalesdate(datePicker.getJFormattedTextField().getText());
+//					temp.setSeller(txtfSalesPerson.getText());
+					temp.setSeller(CbxSeller.getSelectedItem().toString());
+					temp.setFee(Integer.parseInt(txtfFee.getText()));
+//					temp.setQuantity(Integer.parseInt(txtfQuant.getText()));
+					temp.setQuantity(Integer.parseInt((String) CbxQuant.getSelectedItem()));
+
+					SalesDAOImpl.UpdateSQL(table);
+				} catch (Exception e2) {
+			        JOptionPane.showMessageDialog(frame, "Cart was already empty", "Message", JOptionPane.INFORMATION_MESSAGE);
+				}
+				
 			}
 		});
 		
@@ -441,10 +409,63 @@ public class SalesFrame extends JFrame {
 		});
 		btnNewButton_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
+		gbc_btnNewButton_3.insets = new Insets(0, 0, 0, 5);
 		gbc_btnNewButton_3.gridx = 1;
 		gbc_btnNewButton_3.gridy = 0;
 		panel_2.add(btnNewButton_3, gbc_btnNewButton_3);
+		
+		JButton btnDeleteOrder = new JButton("Delete Order");
+		btnDeleteOrder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SalesDAOImpl.DeleteRow(table);
+				setTable();
+				scrollPane.setViewportView(table);
+			}
+		});
+		btnDeleteOrder.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnDeleteOrder = new GridBagConstraints();
+		gbc_btnDeleteOrder.gridx = 2;
+		gbc_btnDeleteOrder.gridy = 0;
+		panel_2.add(btnDeleteOrder, gbc_btnDeleteOrder);
+		
+		btnSearch.addActionListener(new ActionListener() {
+			@Override
+		    public void actionPerformed(ActionEvent e) {
+		        String searchName = JOptionPane.showInputDialog("Enter customer name:");
+
+		        if (searchName != null) {
+		            if (searchName.trim().isEmpty()) {
+		                // Nếu tên tìm kiếm rỗng, thực hiện việc hiển thị lại danh sách khách hàng ban đầu
+//		                List<Customer> initialCustomerList = salesDAO.getAllCustomers();
+//
+//		                DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+//		                tableModel.setRowCount(0);
+//
+//		                for (Customer customer : initialCustomerList) {
+//		                    Object[] rowData = { customer.getName(), customer.getTel() };
+//		                    tableModel.addRow(rowData);
+//		                }
+		        		tableModel = SalesDAOImpl.ModelPrep();
+		        		table.setModel(tableModel);
+		        		scrollPane.setViewportView(table);
+		            } else {
+		                List<Customer> searchResults = salesDAO.search(searchName);
+
+		                DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+		                tableModel.setRowCount(0);
+
+		                for (Customer customer : searchResults) {
+		                    Object[] rowData = { customer.getName(), customer.getTel() };
+		                    tableModel.addRow(rowData);
+		                }
+		            }
+		        }
+		    }
+		});
+
+
 	}
+	
 	
 	private void openLoginModule() {
         this.setVisible(false);
