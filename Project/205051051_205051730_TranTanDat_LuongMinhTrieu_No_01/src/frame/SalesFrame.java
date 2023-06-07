@@ -90,6 +90,8 @@ import dao.SalesDAOImpl;
 import model.Customer;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class SalesFrame extends JFrame {
 
@@ -166,14 +168,14 @@ public class SalesFrame extends JFrame {
 	 * @throws IOException 
 	 */
 	public SalesFrame() {
+		setType(Type.UTILITY);
+		setAlwaysOnTop(true);
 
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("SaleList");
 
 		frame = new JFrame();
 		salesDAO = new SalesDAOImpl();
-		setType(Type.UTILITY);
 
 		setBounds(100, 100, 800, 550);
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -285,10 +287,10 @@ public class SalesFrame extends JFrame {
 		gbc_panel_1.gridy = 2;
 		getContentPane().add(panel_1, gbc_panel_1);
 		GridBagLayout gbl_panel_1 = new GridBagLayout();
-		gbl_panel_1.columnWidths = new int[]{111, 370, 0};
+		gbl_panel_1.columnWidths = new int[]{111, 0, 370, 0};
 		gbl_panel_1.rowHeights = new int[]{29, 29, 29, 29, 29, 0};
-		gbl_panel_1.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_panel_1.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_1.columnWeights = new double[]{0.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_panel_1.rowWeights = new double[]{0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel_1.setLayout(gbl_panel_1);
 		
 		JLabel lblItemName = new JLabel("Item name:");
@@ -306,7 +308,7 @@ public class SalesFrame extends JFrame {
 		GridBagConstraints gbc_txtfItemName = new GridBagConstraints();
 		gbc_txtfItemName.insets = new Insets(0, 0, 5, 0);
 		gbc_txtfItemName.fill = GridBagConstraints.BOTH;
-		gbc_txtfItemName.gridx = 1;
+		gbc_txtfItemName.gridx = 2;
 		gbc_txtfItemName.gridy = 0;
 		
 		panel_1.add(txtfItemName, gbc_txtfItemName);
@@ -338,7 +340,7 @@ public class SalesFrame extends JFrame {
 		GridBagConstraints gbc_DatePanel = new GridBagConstraints();
 		gbc_DatePanel.insets = new Insets(0, 0, 5, 0);
 		gbc_DatePanel.fill = GridBagConstraints.BOTH;
-		gbc_DatePanel.gridx = 1;
+		gbc_DatePanel.gridx = 2;
 		gbc_DatePanel.gridy = 1;
 		panel_1.add(datePicker, gbc_DatePanel);
 	
@@ -346,12 +348,20 @@ public class SalesFrame extends JFrame {
 
 		lblItemName_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblItemName_2 = new GridBagConstraints();
-		gbc_lblItemName_2.anchor = GridBagConstraints.WEST;
-		gbc_lblItemName_2.fill = GridBagConstraints.VERTICAL;
+		gbc_lblItemName_2.fill = GridBagConstraints.BOTH;
 		gbc_lblItemName_2.insets = new Insets(0, 0, 5, 5);
 		gbc_lblItemName_2.gridx = 0;
 		gbc_lblItemName_2.gridy = 2;
 		panel_1.add(lblItemName_2, gbc_lblItemName_2);
+		
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Lương Minh Triều", "Trần Tấn Đạt"}));
+		GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
+		gbc_comboBox_1.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox_1.gridx = 1;
+		gbc_comboBox_1.gridy = 2;
+		panel_1.add(comboBox_1, gbc_comboBox_1);
 		
 		txtfSalesPerson = new JTextField();
 		txtfSalesPerson.setColumns(10);
@@ -359,7 +369,7 @@ public class SalesFrame extends JFrame {
 		GridBagConstraints gbc_txtfSalesPerson = new GridBagConstraints();
 		gbc_txtfSalesPerson.insets = new Insets(0, 0, 5, 0);
 		gbc_txtfSalesPerson.fill = GridBagConstraints.BOTH;
-		gbc_txtfSalesPerson.gridx = 1;
+		gbc_txtfSalesPerson.gridx = 2;
 		gbc_txtfSalesPerson.gridy = 2;
 		panel_1.add(txtfSalesPerson, gbc_txtfSalesPerson);
 		
@@ -380,7 +390,7 @@ public class SalesFrame extends JFrame {
 		GridBagConstraints gbc_txtfFee = new GridBagConstraints();
 		gbc_txtfFee.insets = new Insets(0, 0, 5, 0);
 		gbc_txtfFee.fill = GridBagConstraints.BOTH;
-		gbc_txtfFee.gridx = 1;
+		gbc_txtfFee.gridx = 2;
 		gbc_txtfFee.gridy = 3;
 		panel_1.add(txtfFee, gbc_txtfFee);
 		
@@ -394,12 +404,22 @@ public class SalesFrame extends JFrame {
 		gbc_lblItemName_4.gridy = 4;
 		panel_1.add(lblItemName_4, gbc_lblItemName_4);
 		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.insets = new Insets(0, 0, 0, 5);
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridx = 1;
+		gbc_comboBox.gridy = 4;
+		panel_1.add(comboBox, gbc_comboBox);
+		
+		
 		txtfQuant = new JTextField();
 		txtfQuant.setColumns(10);
 		txtfQuant.setText(Integer.toString(customer.get(0).getCart().getQuantity()));
 		GridBagConstraints gbc_txtfQuant = new GridBagConstraints();
 		gbc_txtfQuant.fill = GridBagConstraints.BOTH;
-		gbc_txtfQuant.gridx = 1;
+		gbc_txtfQuant.gridx = 2;
 		gbc_txtfQuant.gridy = 4;
 		panel_1.add(txtfQuant, gbc_txtfQuant);
 		
@@ -453,6 +473,7 @@ public class SalesFrame extends JFrame {
 	        	int[]tdate = date(row);
 	        	try {
 	        		txtfSalesPerson.setText(temp.getSeller());
+	        		comboBox_1.setSelectedItem(temp.getSeller());
 		    		txtfItemName.setText(temp.getItemname());
 //		    		datePicker.getModel().setDate(calendar.get(calendar.YEAR), calendar.get(calendar.MONTH), calendar.get(calendar.DAY_OF_MONTH));
 		    		datePicker.getModel().setDate(tdate[0],tdate[1]-1,tdate[2]);
@@ -474,7 +495,7 @@ public class SalesFrame extends JFrame {
 				temp.setSeller(txtfSalesPerson.getText());
 				temp.setFee(Integer.parseInt(txtfFee.getText()));
 				temp.setQuantity(Integer.parseInt(txtfQuant.getText()));
-				SalesDAOImpl.UpdateSQL(table,true);
+				SalesDAOImpl.UpdateSQL(table);
 			}
 		});
 		
@@ -501,7 +522,7 @@ public class SalesFrame extends JFrame {
 		JButton btnSave_1 = new JButton("Delete Order");
 		btnSave_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SalesDAOImpl.UpdateSQL(table,false);
+				SalesDAOImpl.AppendSQL(table, false);
 				setTable();
 				scrollPane.setViewportView(table);
 			}
